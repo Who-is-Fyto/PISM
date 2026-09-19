@@ -3,6 +3,12 @@ package pharmacyims;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLightLaf;
 
+import pharmacyims.dao.UserDAO;
+import pharmacyims.model.User;
+import pharmacyims.session.UserSession;
+import pharmacyims.ui.admin.AdminDashboard;
+import pharmacyims.ui.cashier.CashierDashboard;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -433,28 +439,30 @@ public class LoginFrame extends JFrame {
             return;
         }
 
-        // 4. Default Demonstration Evaluation (Standalone Prototype Mode)
+        // 4. Authenticate via UserDAO (MySQL DB or Mock Fallback)
         setBusy(true);
-        Timer timer = new Timer(500, (ActionEvent e) -> {
+        Timer timer = new Timer(350, (ActionEvent e) -> {
             setBusy(false);
-            if ("admin".equalsIgnoreCase(username) && "admin123".equals(password)) {
-                showSuccessMessage("Signed in as Administrator. Welcome!");
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Successfully authenticated as [Administrator]!\nUser: System Admin (admin)\n\n"
-                                + "Routing to AdminDashboard in Phase 3...",
-                        "Fyto PIMS — Login Successful",
-                        JOptionPane.INFORMATION_MESSAGE
-                );
-            } else if ("cashier1".equalsIgnoreCase(username) && "cashier123".equals(password)) {
-                showSuccessMessage("Signed in as Cashier. Welcome!");
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Successfully authenticated as [Cashier]!\nUser: Jane Doe (cashier1)\n\n"
-                                + "Routing to Cashier POS Dashboard in Phase 4...",
-                        "Fyto PIMS — Login Successful",
-                        JOptionPane.INFORMATION_MESSAGE
-                );
+            UserDAO userDAO = new UserDAO();
+            User authenticatedUser = userDAO.authenticate(username, password);
+
+            if (authenticatedUser != null) {
+                UserSession.initialize(authenticatedUser);
+                showSuccessMessage("Signed in as " + authenticatedUser.getRole() + ". Redirecting...");
+
+                if (authenticatedUser.isAdmin()) {
+                    SwingUtilities.invokeLater(() -> {
+                        AdminDashboard dashboard = new AdminDashboard();
+                        dashboard.setVisible(true);
+                        dispose();
+                    });
+                } else {
+                    SwingUtilities.invokeLater(() -> {
+                        CashierDashboard dashboard = new CashierDashboard();
+                        dashboard.setVisible(true);
+                        dispose();
+                    });
+                }
             } else {
                 txtPassword.putClientProperty(FlatClientProperties.OUTLINE, FlatClientProperties.OUTLINE_ERROR);
                 showErrorMessage("Invalid username or password. Please try again.");
