@@ -21,6 +21,59 @@ public class SaleDAO {
     private static final Logger LOGGER = Logger.getLogger(SaleDAO.class.getName());
 
     private static final List<Sale> MOCK_SALES = new CopyOnWriteArrayList<>();
+    private static final java.util.Map<Integer, List<SaleItem>> MOCK_SALE_ITEMS = new java.util.concurrent.ConcurrentHashMap<>();
+
+    static {
+        long now = System.currentTimeMillis();
+        long oneDay = 24L * 60 * 60 * 1000;
+
+        // Sale 1001 (Today)
+        Sale s1 = new Sale(1001, new Timestamp(now - 1000 * 60 * 30), new BigDecimal("29.00"), new BigDecimal("30.00"), new BigDecimal("1.00"), 2);
+        s1.setCashierName("Jane Doe (Dispenser 1)");
+        List<SaleItem> items1 = new ArrayList<>();
+        items1.add(new SaleItem(1, "Amoxicillin 500mg", 2, new BigDecimal("12.50")));
+        items1.add(new SaleItem(2, "Paracetamol 500mg", 1, new BigDecimal("4.00")));
+        s1.setItems(items1);
+        MOCK_SALES.add(s1);
+        MOCK_SALE_ITEMS.put(1001, items1);
+
+        // Sale 1002 (Today)
+        Sale s2 = new Sale(1002, new Timestamp(now - 1000 * 60 * 90), new BigDecimal("48.00"), new BigDecimal("50.00"), new BigDecimal("2.00"), 3);
+        s2.setCashierName("John Smith (Dispenser 2)");
+        List<SaleItem> items2 = new ArrayList<>();
+        items2.add(new SaleItem(5, "Ceftriaxone 1g Vial", 2, new BigDecimal("24.00")));
+        s2.setItems(items2);
+        MOCK_SALES.add(s2);
+        MOCK_SALE_ITEMS.put(1002, items2);
+
+        // Sale 1003 (Yesterday)
+        Sale s3 = new Sale(1003, new Timestamp(now - oneDay), new BigDecimal("36.00"), new BigDecimal("40.00"), new BigDecimal("4.00"), 2);
+        s3.setCashierName("Jane Doe (Dispenser 1)");
+        List<SaleItem> items3 = new ArrayList<>();
+        items3.add(new SaleItem(7, "Salbutamol Inhaler 100mcg", 2, new BigDecimal("18.00")));
+        s3.setItems(items3);
+        MOCK_SALES.add(s3);
+        MOCK_SALE_ITEMS.put(1003, items3);
+
+        // Sale 1004 (3 days ago)
+        Sale s4 = new Sale(1004, new Timestamp(now - 3 * oneDay), new BigDecimal("18.30"), new BigDecimal("20.00"), new BigDecimal("1.70"), 3);
+        s4.setCashierName("John Smith (Dispenser 2)");
+        List<SaleItem> items4 = new ArrayList<>();
+        items4.add(new SaleItem(4, "Cough Syrup DM 100ml", 1, new BigDecimal("9.80")));
+        items4.add(new SaleItem(6, "Hydrocortisone 1% Cream", 1, new BigDecimal("8.50")));
+        s4.setItems(items4);
+        MOCK_SALES.add(s4);
+        MOCK_SALE_ITEMS.put(1004, items4);
+
+        // Sale 1005 (5 days ago)
+        Sale s5 = new Sale(1005, new Timestamp(now - 5 * oneDay), new BigDecimal("32.00"), new BigDecimal("35.00"), new BigDecimal("3.00"), 2);
+        s5.setCashierName("Jane Doe (Dispenser 1)");
+        List<SaleItem> items5 = new ArrayList<>();
+        items5.add(new SaleItem(10, "Ciprofloxacin 500mg", 2, new BigDecimal("16.00")));
+        s5.setItems(items5);
+        MOCK_SALES.add(s5);
+        MOCK_SALE_ITEMS.put(1005, items5);
+    }
 
     /**
      * Executes atomic point-of-sale checkout:
@@ -102,6 +155,7 @@ public class SaleDAO {
             sale.setSaleDate(new Timestamp(System.currentTimeMillis()));
             sale.setItems(items);
             MOCK_SALES.add(sale);
+            MOCK_SALE_ITEMS.put(mockId, new ArrayList<>(items));
             return mockId;
 
         } finally {
@@ -112,6 +166,10 @@ public class SaleDAO {
                 } catch (SQLException ignored) {}
             }
         }
+    }
+
+    public List<Sale> getAllSales() {
+        return getSalesByDateRange(LocalDate.of(2000, 1, 1), LocalDate.of(2099, 12, 31));
     }
 
     public List<Sale> getSalesByDateRange(LocalDate start, LocalDate end) {
@@ -141,8 +199,48 @@ public class SaleDAO {
             }
             return list;
         } catch (SQLException ex) {
-            LOGGER.log(Level.WARNING, "Database sales fetch failed, returning mock sales: " + ex.getMessage());
-            return new ArrayList<>(MOCK_SALES);
+            LOGGER.log(Level.WARNING, "Database sales fetch failed, returning filtered mock sales: " + ex.getMessage());
+            List<Sale> filtered = new ArrayList<>();
+            for (Sale s : MOCK_SALES) {
+                if (s.getSaleDate() != null) {
+                    LocalDate d = s.getSaleDate().toLocalDateTime().toLocalDate();
+                    if (!d.isBefore(start) && !d.isAfter(end)) {
+                        filtered.add(s);
+                    }
+                }
+            }
+            return filtered;
         }
+    }
+
+    public List<SaleItem> getSaleItems(int saleId) {
+        String sql = "SELECT si.*, m.name AS medicine_name " +
+                "FROM sale_items si " +
+                "LEFT JOIN medicines m ON si.medicine_id = m.medicine_id " +
+                "WHERE si.sale_id = ?";
+        List<SaleItem> list = new ArrayList<>();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, saleId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    SaleItem item = new SaleItem(
+                            rs.getInt("sale_item_id"),
+                            rs.getInt("sale_id"),
+                            rs.getInt("medicine_id"),
+                            rs.getInt("quantity_sold"),
+                            rs.getBigDecimal("price_at_sale")
+                    );
+                    item.setMedicineName(rs.getString("medicine_name"));
+                    list.add(item);
+                }
+            }
+            return list;
+        } catch (SQLException ex) {
+            LOGGER.log(Level.WARNING, "Database fetch sale_items failed, checking mock: " + ex.getMessage());
+        }
+
+        List<SaleItem> mockItems = MOCK_SALE_ITEMS.get(saleId);
+        return mockItems != null ? new ArrayList<>(mockItems) : new ArrayList<>();
     }
 }

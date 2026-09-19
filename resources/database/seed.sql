@@ -32,3 +32,21 @@ INSERT INTO medicines (name, company, medicine_type, price, quantity_in_stock, r
 ('Omeprazole 20mg', 'VitalCare Remedies', 'Capsule', 14.50, 5, 20, DATE_ADD(CURDATE(), INTERVAL 9 MONTH), 4),   -- Low Stock Alert
 ('Ciprofloxacin 500mg', 'Apex Bioscience', 'Tablet', 16.00, 95, 15, DATE_ADD(CURDATE(), INTERVAL 20 MONTH), 2),
 ('Eye Drops Tears 15ml', 'Global Generic Labs', 'Drops', 6.50, 35, 10, DATE_ADD(CURDATE(), INTERVAL 25 DAY), 3);    -- Expiring Soon
+
+-- 4. Sample Sales Transactions (Point of Sale history)
+INSERT INTO sales (sale_id, sale_date, total_amount, amount_paid, change_given, user_id) VALUES
+(1001, DATE_SUB(NOW(), INTERVAL 30 MINUTE), 29.00, 30.00, 1.00, 2),
+(1002, DATE_SUB(NOW(), INTERVAL 90 MINUTE), 48.00, 50.00, 2.00, 3),
+(1003, DATE_SUB(NOW(), INTERVAL 1 DAY), 36.00, 40.00, 4.00, 2),
+(1004, DATE_SUB(NOW(), INTERVAL 3 DAY), 18.30, 20.00, 1.70, 3),
+(1005, DATE_SUB(NOW(), INTERVAL 5 DAY), 32.00, 35.00, 3.00, 2);
+
+-- 5. Sample Sale Line Items (Dispensed medicines)
+INSERT INTO sale_items (sale_id, medicine_id, quantity_sold, price_at_sale) VALUES
+(1001, 1, 2, 12.50), -- 2x Amoxicillin
+(1001, 2, 1, 4.00),  -- 1x Paracetamol
+(1002, 5, 2, 24.00), -- 2x Ceftriaxone
+(1003, 7, 2, 18.00), -- 2x Salbutamol Inhaler
+(1004, 4, 1, 9.80),  -- 1x Cough Syrup
+(1004, 6, 1, 8.50),  -- 1x Hydrocortisone
+(1005, 10, 2, 16.00);-- 2x Ciprofloxacin

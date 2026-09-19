@@ -47,13 +47,14 @@ public class DBConnection {
 
         driver = props.getProperty("db.driver", "com.mysql.cj.jdbc.Driver");
         url = props.getProperty("db.url", "jdbc:mysql://localhost:3306/pims_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC");
-        username = props.getProperty("db.user", "root");
-        password = props.getProperty("db.password", "root");
+        username = props.getProperty("db.user", "fyto");
+        password = props.getProperty("db.password", "#Chipapamike16");
 
         try {
             Class.forName(driver);
             initialized = true;
             LOGGER.info("JDBC Driver successfully registered: " + driver);
+            LOGGER.info("Database configured for URL: " + url + " | DB User: " + username);
         } catch (ClassNotFoundException e) {
             LOGGER.log(Level.SEVERE, "MySQL JDBC Driver not found on classpath!", e);
         }

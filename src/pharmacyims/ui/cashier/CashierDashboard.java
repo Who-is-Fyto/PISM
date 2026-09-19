@@ -64,10 +64,44 @@ public class CashierDashboard extends JFrame {
         setSize(1240, 780);
         setMinimumSize(new Dimension(1024, 660));
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                handleWindowClose();
+            }
+        });
 
         initUI();
         setupShortcuts();
+    }
+
+    private void handleWindowClose() {
+        if (!cartItems.isEmpty()) {
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "You have " + cartItems.size() + " uncompleted item(s) in your dispensing cart.\n"
+                            + "Are you sure you want to exit and abandon this transaction?",
+                    "Unsaved Cart Warning",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+            if (confirm != JOptionPane.YES_OPTION) {
+                return;
+            }
+        } else {
+            int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to exit Fyto PIMS POS?",
+                    "Exit Confirmation",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+            if (confirm != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+        dispose();
     }
 
     private void initUI() {

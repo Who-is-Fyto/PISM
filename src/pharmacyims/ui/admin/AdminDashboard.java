@@ -10,6 +10,7 @@ import pharmacyims.model.Supplier;
 import pharmacyims.model.User;
 import pharmacyims.session.UserSession;
 import pharmacyims.ui.cashier.CashierDashboard;
+import pharmacyims.ui.reports.ReportsPanel;
 import pharmacyims.ui.common.CurrencyTableCellRenderer;
 import pharmacyims.ui.common.HeaderBar;
 import pharmacyims.ui.common.MetricCard;
@@ -77,19 +78,30 @@ public class AdminDashboard extends JFrame {
     private DefaultTableModel userTableModel;
     private JTable userTable;
 
-    // Insights Tab Components
-    private JLabel lblTotalValuation;
-    private JLabel lblTotalUnits;
-    private JLabel lblItemsToRestock;
-    private DefaultTableModel restockTableModel;
-    private JTable restockTable;
+    // Reports Tab Component
+    private ReportsPanel reportsPanel;
 
     public AdminDashboard() {
         setTitle("Fyto PIMS — Administrator Management Portal");
         setSize(1240, 820);
         setMinimumSize(new Dimension(1024, 680));
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                int confirm = JOptionPane.showConfirmDialog(
+                        AdminDashboard.this,
+                        "Are you sure you want to exit Fyto PIMS?",
+                        "Exit Confirmation",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE
+                );
+                if (confirm == JOptionPane.YES_OPTION) {
+                    dispose();
+                }
+            }
+        });
 
         initUI();
         refreshAll();
@@ -128,7 +140,8 @@ public class AdminDashboard extends JFrame {
         contentCardsPanel.add(createMedicinesPanel(), CARD_MEDICINES);
         contentCardsPanel.add(createSuppliersPanel(), CARD_SUPPLIERS);
         contentCardsPanel.add(createUsersPanel(), CARD_USERS);
-        contentCardsPanel.add(createReportsPanel(), CARD_REPORTS);
+        reportsPanel = new ReportsPanel();
+        contentCardsPanel.add(reportsPanel, CARD_REPORTS);
 
         workspacePanel.add(contentCardsPanel, BorderLayout.CENTER);
         bodyPanel.add(workspacePanel, BorderLayout.CENTER);
@@ -936,151 +949,6 @@ public class AdminDashboard extends JFrame {
     // TAB 4: FINANCIAL & INVENTORY INSIGHTS / REPORTS SUMMARY PANEL
     // =========================================================================
 
-    private JPanel createReportsPanel() {
-        JPanel panel = new JPanel(new BorderLayout(0, 16));
-        panel.setBackground(Color.WHITE);
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(226, 232, 240), 1, true),
-                new EmptyBorder(16, 18, 16, 18)
-        ));
-        panel.putClientProperty(FlatClientProperties.STYLE, "arc: 12;");
-
-        // Top Header
-        JPanel topHeader = new JPanel(new BorderLayout());
-        topHeader.setOpaque(false);
-
-        JLabel lblTitle = new JLabel("Pharmacy Operational Summary & Restock Advisory");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        lblTitle.setForeground(new Color(15, 23, 42));
-        topHeader.add(lblTitle, BorderLayout.WEST);
-
-        JButton btnRefreshInsights = new JButton("Recalculate Insights");
-        btnRefreshInsights.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
-        btnRefreshInsights.addActionListener(e -> reloadInsights());
-        topHeader.add(btnRefreshInsights, BorderLayout.EAST);
-
-        panel.add(topHeader, BorderLayout.NORTH);
-
-        // Center Content: Summary Boxes + Restock Advisory Table
-        JPanel centerPanel = new JPanel(new BorderLayout(0, 14));
-        centerPanel.setOpaque(false);
-
-        // 3 mini summary insight blocks
-        JPanel cardsRow = new JPanel(new GridLayout(1, 3, 14, 0));
-        cardsRow.setOpaque(false);
-
-        cardsRow.add(createInsightCard("TOTAL INVENTORY VALUE", "$0.00", "Total retail stock valuation", new Color(13, 148, 136), val -> lblTotalValuation = val));
-        cardsRow.add(createInsightCard("TOTAL STOCK UNITS", "0", "Aggregated units on shelves", new Color(2, 132, 199), val -> lblTotalUnits = val));
-        cardsRow.add(createInsightCard("CRITICAL RESTOCK ITEMS", "0", "Medicines at/below reorder mark", new Color(239, 68, 68), val -> lblItemsToRestock = val));
-
-        centerPanel.add(cardsRow, BorderLayout.NORTH);
-
-        // Restock Needs Table
-        JPanel tableSection = new JPanel(new BorderLayout(0, 8));
-        tableSection.setOpaque(false);
-
-        JLabel lblSub = new JLabel("⚠ Urgent Restock Attention List (Stock ≤ Reorder Level)");
-        lblSub.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        lblSub.setForeground(new Color(180, 83, 9)); // Amber
-        tableSection.add(lblSub, BorderLayout.NORTH);
-
-        String[] cols = {"Medicine Name", "Dosage Type", "Current Stock", "Reorder Level", "Deficit", "Preferred Supplier", "Supplier Contact Phone"};
-        restockTableModel = new DefaultTableModel(cols, 0) {
-            @Override public boolean isCellEditable(int row, int col) { return false; }
-        };
-
-        restockTable = new JTable(restockTableModel);
-        restockTable.setRowHeight(30);
-        restockTable.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        restockTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
-        restockTable.getTableHeader().setBackground(new Color(241, 245, 249));
-
-        JScrollPane scroll = new JScrollPane(restockTable);
-        scroll.setBorder(BorderFactory.createLineBorder(new Color(226, 232, 240), 1));
-        tableSection.add(scroll, BorderLayout.CENTER);
-
-        centerPanel.add(tableSection, BorderLayout.CENTER);
-        panel.add(centerPanel, BorderLayout.CENTER);
-
-        return panel;
-    }
-
-    private JPanel createInsightCard(String title, String initialVal, String sub, Color accent, java.util.function.Consumer<JLabel> labelConsumer) {
-        JPanel card = new JPanel(new BorderLayout(0, 6));
-        card.setBackground(new Color(248, 250, 252));
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(226, 232, 240), 1, true),
-                new EmptyBorder(12, 14, 12, 14)
-        ));
-        card.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
-
-        JLabel lblT = new JLabel(title);
-        lblT.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        lblT.setForeground(new Color(100, 116, 139));
-        card.add(lblT, BorderLayout.NORTH);
-
-        JLabel lblV = new JLabel(initialVal);
-        lblV.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblV.setForeground(accent);
-        labelConsumer.accept(lblV);
-        card.add(lblV, BorderLayout.CENTER);
-
-        JLabel lblS = new JLabel(sub);
-        lblS.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        lblS.setForeground(new Color(148, 163, 184));
-        card.add(lblS, BorderLayout.SOUTH);
-
-        return card;
-    }
-
-    public void reloadInsights() {
-        List<Medicine> medicines = medicineDAO.getAllMedicines();
-        List<Supplier> suppliers = supplierDAO.getAllSuppliers();
-
-        BigDecimal totalValuation = BigDecimal.ZERO;
-        int totalUnits = 0;
-        int restockCount = 0;
-
-        restockTableModel.setRowCount(0);
-
-        for (Medicine m : medicines) {
-            if (m.getPrice() != null) {
-                totalValuation = totalValuation.add(m.getPrice().multiply(BigDecimal.valueOf(m.getQuantityInStock())));
-            }
-            totalUnits += m.getQuantityInStock();
-
-            if (m.getQuantityInStock() <= m.getReorderLevel()) {
-                restockCount++;
-                int deficit = Math.max(0, m.getReorderLevel() - m.getQuantityInStock());
-
-                String supPhone = "N/A";
-                if (m.getSupplierId() != null) {
-                    for (Supplier s : suppliers) {
-                        if (s.getSupplierId() == m.getSupplierId()) {
-                            supPhone = s.getPhone();
-                            break;
-                        }
-                    }
-                }
-
-                restockTableModel.addRow(new Object[]{
-                        m.getName(),
-                        m.getMedicineType(),
-                        m.getQuantityInStock(),
-                        m.getReorderLevel(),
-                        deficit > 0 ? "+" + deficit + " needed" : "At threshold",
-                        m.getSupplierName() != null ? m.getSupplierName() : "Unassigned",
-                        supPhone
-                });
-            }
-        }
-
-        NumberFormat currFmt = NumberFormat.getCurrencyInstance(Locale.US);
-        if (lblTotalValuation != null) lblTotalValuation.setText(currFmt.format(totalValuation));
-        if (lblTotalUnits != null) lblTotalUnits.setText(String.format("%,d", totalUnits));
-        if (lblItemsToRestock != null) lblItemsToRestock.setText(String.valueOf(restockCount));
-    }
-
     // =========================================================================
     // GLOBAL REFRESH & METRICS
     // =========================================================================
@@ -1089,7 +957,9 @@ public class AdminDashboard extends JFrame {
         reloadMedicines();
         reloadSuppliers();
         reloadUsers();
-        reloadInsights();
+        if (reportsPanel != null) {
+            reportsPanel.loadCurrentStream();
+        }
         refreshMetrics();
     }
 
