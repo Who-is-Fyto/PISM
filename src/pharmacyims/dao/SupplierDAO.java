@@ -10,13 +10,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Data Access Object for Supplier entities.
- */
+// Data access object for pharmaceutical suppliers.
 public class SupplierDAO {
     private static final Logger LOGGER = Logger.getLogger(SupplierDAO.class.getName());
 
-    // In-memory fallback mock cache
+    // In-memory fallback cache
     private static final List<Supplier> MOCK_SUPPLIERS = new CopyOnWriteArrayList<>();
     static {
         MOCK_SUPPLIERS.add(new Supplier(1, "MedPharma Logistics", "David Clark", "+1 (555) 019-2834", "orders@medpharma.com", "124 Healthcare Industrial Park, District 4"));

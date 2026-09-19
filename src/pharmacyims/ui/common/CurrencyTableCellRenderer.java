@@ -7,9 +7,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-/**
- * Custom TableCellRenderer for right-aligned currency formatting.
- */
+// Table cell renderer for right-aligned currency values.
 public class CurrencyTableCellRenderer extends DefaultTableCellRenderer {
 
     private final NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.US);

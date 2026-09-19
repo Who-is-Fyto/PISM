@@ -15,9 +15,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-/**
- * Modern modal form dialog for Adding and Editing Medicines in Fyto PIMS.
- */
+// Form dialog for adding and editing medicines.
 public class MedicineFormDialog extends JDialog {
 
     private final MedicineDAO medicineDAO;
@@ -53,7 +51,7 @@ public class MedicineFormDialog extends JDialog {
         mainPanel.setBackground(Color.WHITE);
         mainPanel.setBorder(new EmptyBorder(24, 28, 24, 28));
 
-        // 1. Header Banner
+        // Header
         JPanel headerPanel = new JPanel(new GridLayout(2, 1, 0, 4));
         headerPanel.setOpaque(false);
 
@@ -69,7 +67,7 @@ public class MedicineFormDialog extends JDialog {
         headerPanel.add(lblSubtitle);
         mainPanel.add(headerPanel, BorderLayout.NORTH);
 
-        // 2. Form Grid Body
+        // Input fields grid
         JPanel formGrid = new JPanel(new GridBagLayout());
         formGrid.setOpaque(false);
         formGrid.setBorder(new EmptyBorder(16, 0, 16, 0));
@@ -80,41 +78,34 @@ public class MedicineFormDialog extends JDialog {
 
         int row = 0;
 
-        // Name
         txtName = new JTextField();
         txtName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. Amoxicillin 500mg");
         txtName.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Medicine / Brand Name *", txtName);
 
-        // Manufacturer / Company
         txtCompany = new JTextField();
         txtCompany.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. MedPharma Logistics");
         txtCompany.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Pharmaceutical Manufacturer *", txtCompany);
 
-        // Medicine Type
         String[] types = {"Tablet", "Capsule", "Syrup", "Injection", "Cream", "Inhaler", "Drops", "Ointment", "Other"};
         cmbType = new JComboBox<>(types);
         cmbType.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Dosage Form / Type *", cmbType);
 
-        // Price
         txtPrice = new JTextField();
         txtPrice.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. 12.50");
         txtPrice.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Unit Dispense Price ($) *", txtPrice);
 
-        // Initial Quantity
         spinQuantity = new JSpinner(new SpinnerNumberModel(50, 0, 999999, 1));
         spinQuantity.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Initial Stock Quantity *", spinQuantity);
 
-        // Reorder Level
         spinReorderLevel = new JSpinner(new SpinnerNumberModel(15, 1, 9999, 1));
         spinReorderLevel.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Reorder Warning Level *", spinReorderLevel);
 
-        // Expiration Date
         txtExpiryDate = new JTextField();
         LocalDate defaultExp = LocalDate.now().plusMonths(12);
         txtExpiryDate.setText(defaultExp.toString());
@@ -122,7 +113,6 @@ public class MedicineFormDialog extends JDialog {
         txtExpiryDate.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Expiration Date (YYYY-MM-DD) *", txtExpiryDate);
 
-        // Supplier Selection
         cmbSupplier = new JComboBox<>();
         cmbSupplier.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         populateSuppliers();
@@ -130,7 +120,7 @@ public class MedicineFormDialog extends JDialog {
 
         mainPanel.add(formGrid, BorderLayout.CENTER);
 
-        // 3. Bottom Error Label and Action Buttons
+        // Actions panel
         JPanel bottomPanel = new JPanel(new BorderLayout(0, 10));
         bottomPanel.setOpaque(false);
 
@@ -148,7 +138,7 @@ public class MedicineFormDialog extends JDialog {
         btnRow.add(btnCancel);
 
         JButton btnSave = new JButton(existingMedicine == null ? "Save Medicine" : "Update Changes");
-        btnSave.setBackground(new Color(13, 148, 136)); // Medical Teal
+        btnSave.setBackground(new Color(13, 148, 136));
         btnSave.setForeground(Color.WHITE);
         btnSave.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnSave.putClientProperty(FlatClientProperties.STYLE, "arc: 8; hoverBackground: #0F766E;");
@@ -158,7 +148,7 @@ public class MedicineFormDialog extends JDialog {
         bottomPanel.add(btnRow, BorderLayout.SOUTH);
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Populate fields if editing
+        // Pre-fill fields when editing
         if (existingMedicine != null) {
             txtName.setText(existingMedicine.getName());
             txtCompany.setText(existingMedicine.getCompany());

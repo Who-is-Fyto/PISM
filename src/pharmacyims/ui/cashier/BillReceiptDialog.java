@@ -16,10 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Modern modal dialog rendering a formatted pharmacy thermal receipt.
- * Supports on-screen preview and one-click printing via Java Print API.
- */
+// Modal dialog displaying thermal receipt preview with print capability.
 public class BillReceiptDialog extends JDialog {
 
     private final Sale sale;
@@ -43,7 +40,6 @@ public class BillReceiptDialog extends JDialog {
         root.setBackground(new Color(248, 250, 252));
         root.setBorder(new EmptyBorder(16, 20, 16, 20));
 
-        // Header Title
         JPanel titlePanel = new JPanel(new GridLayout(2, 1, 0, 2));
         titlePanel.setOpaque(false);
 
@@ -59,7 +55,7 @@ public class BillReceiptDialog extends JDialog {
         titlePanel.add(lblSubtitle);
         root.add(titlePanel, BorderLayout.NORTH);
 
-        // Receipt Paper Area (Monospace Text Area styled like thermal receipt paper)
+        // Monospace text area formatted as receipt paper
         txtReceipt = new JTextArea();
         txtReceipt.setEditable(false);
         txtReceipt.setFont(new Font("Monospaced", Font.PLAIN, 12));
@@ -76,7 +72,6 @@ public class BillReceiptDialog extends JDialog {
         ));
         root.add(scrollPane, BorderLayout.CENTER);
 
-        // Bottom Action Buttons: Print & Done
         JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         btnRow.setOpaque(false);
 
@@ -87,7 +82,7 @@ public class BillReceiptDialog extends JDialog {
         btnRow.add(btnClose);
 
         JButton btnPrint = new JButton("🖨  Print Receipt");
-        btnPrint.setBackground(new Color(13, 148, 136)); // Medical Teal
+        btnPrint.setBackground(new Color(13, 148, 136));
         btnPrint.setForeground(Color.WHITE);
         btnPrint.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnPrint.putClientProperty(FlatClientProperties.STYLE, "arc: 8; hoverBackground: #0F766E;");

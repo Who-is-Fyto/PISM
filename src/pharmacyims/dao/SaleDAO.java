@@ -13,13 +13,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Data Access Object for Point-of-Sale Transactions.
- * Enforces atomic multi-table commits and stock reduction.
- */
+// Data access object for point-of-sale transactions and checkout.
 public class SaleDAO {
     private static final Logger LOGGER = Logger.getLogger(SaleDAO.class.getName());
 
+    // In-memory fallback cache
     private static final List<Sale> MOCK_SALES = new CopyOnWriteArrayList<>();
     private static final java.util.Map<Integer, List<SaleItem>> MOCK_SALE_ITEMS = new java.util.concurrent.ConcurrentHashMap<>();
 
@@ -75,13 +73,7 @@ public class SaleDAO {
         MOCK_SALE_ITEMS.put(1005, items5);
     }
 
-    /**
-     * Executes atomic point-of-sale checkout:
-     * 1. Inserts into sales table
-     * 2. Inserts line items into sale_items
-     * 3. Decrements medicines stock
-     * 4. Commits on success, rolls back on error.
-     */
+    // Atomic sale checkout: saves sale, persists items, and decrements stock
     public int processSale(Sale sale, List<SaleItem> items) throws SQLException {
         if (items == null || items.isEmpty()) {
             throw new IllegalArgumentException("Cannot process a sale with zero items.");

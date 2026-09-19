@@ -4,20 +4,14 @@ import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Fyto PIMS — Pharmacy Inventory Management System
- * Main Application Bootstrap Entry Point.
- */
+// Main application entry point for Fyto PIMS.
 public class PharmacyIMS {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        // 1. Initialize FlatLaf Modern Look and Feel
+        // Initialize FlatLaf Look and Feel
         FlatLightLaf.setup();
 
-        // 2. Global UI Defaults & Polish
+        // Configure global UI theme defaults
         UIManager.put("Button.arc", 10);
         UIManager.put("Component.arc", 10);
         UIManager.put("TextComponent.arc", 10);
@@ -26,7 +20,7 @@ public class PharmacyIMS {
         UIManager.put("Table.alternateRowColor", new Color(248, 250, 252));
         UIManager.put("Table.rowHeight", 28);
 
-        // 3. Launch Fyto PIMS Login Window on the Swing Event Dispatch Thread (EDT)
+        // Launch login window on the Swing event thread
         SwingUtilities.invokeLater(() -> {
             LoginFrame loginFrame = new LoginFrame();
             loginFrame.setVisible(true);

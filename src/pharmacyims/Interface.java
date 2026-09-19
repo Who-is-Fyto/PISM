@@ -1,14 +1,6 @@
 package pharmacyims;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/MDIApplication.java to edit this template
- */
-
-/**
- *
- * @author michael
- */
+// Legacy NetBeans MDI prototype frame
 public class Interface extends javax.swing.JFrame {
 
     /**

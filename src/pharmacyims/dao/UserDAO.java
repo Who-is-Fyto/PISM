@@ -10,13 +10,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Data Access Object for User entities & Role-Based Access Control.
- */
+// Data access object for users and role-based authentication.
 public class UserDAO {
     private static final Logger LOGGER = Logger.getLogger(UserDAO.class.getName());
 
-    // In-memory fallback mock cache for offline development/prototyping
+    // In-memory fallback cache
     private static final List<User> MOCK_USERS = new CopyOnWriteArrayList<>();
     static {
         MOCK_USERS.add(new User(1, "admin", "admin123", "Admin", "System Administrator"));

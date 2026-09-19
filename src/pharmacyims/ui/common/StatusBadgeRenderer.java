@@ -7,9 +7,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
-/**
- * Custom TableCellRenderer rendering colored rounded pill badges for statuses.
- */
+// Table cell renderer displaying colored rounded badges for status indicators.
 public class StatusBadgeRenderer extends DefaultTableCellRenderer {
 
     private final JLabel badgeLabel;
@@ -20,7 +18,7 @@ public class StatusBadgeRenderer extends DefaultTableCellRenderer {
         badgeLabel.setFont(new Font("Segoe UI", Font.BOLD, 11));
         badgeLabel.setOpaque(true);
         badgeLabel.setBorder(new EmptyBorder(3, 10, 3, 10));
-        badgeLabel.putClientProperty(FlatClientProperties.STYLE, "arc: 999;"); // Pill shape
+        badgeLabel.putClientProperty(FlatClientProperties.STYLE, "arc: 999;");
 
         container = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 4));
         container.setOpaque(true);
@@ -33,19 +31,19 @@ public class StatusBadgeRenderer extends DefaultTableCellRenderer {
         String text = value != null ? value.toString().trim() : "";
         badgeLabel.setText(text);
 
-        // Color mapping
+        // Status color styling
         if (text.equalsIgnoreCase("In Stock") || text.equalsIgnoreCase("Active") || text.equalsIgnoreCase("Good")) {
-            badgeLabel.setBackground(new Color(220, 252, 231)); // Emerald tint (#DCFCE7)
-            badgeLabel.setForeground(new Color(21, 128, 61));    // Emerald text (#15803D)
+            badgeLabel.setBackground(new Color(220, 252, 231));
+            badgeLabel.setForeground(new Color(21, 128, 61));
         } else if (text.equalsIgnoreCase("Low Stock") || text.equalsIgnoreCase("Warning")) {
-            badgeLabel.setBackground(new Color(254, 243, 199)); // Amber tint (#FEF3C7)
-            badgeLabel.setForeground(new Color(180, 83, 9));     // Amber text (#B45309)
+            badgeLabel.setBackground(new Color(254, 243, 199));
+            badgeLabel.setForeground(new Color(180, 83, 9));
         } else if (text.equalsIgnoreCase("Out of Stock") || text.equalsIgnoreCase("Critical") || text.equalsIgnoreCase("Expired")) {
-            badgeLabel.setBackground(new Color(254, 226, 226)); // Red tint (#FEE2E2)
-            badgeLabel.setForeground(new Color(185, 28, 28));    // Red text (#B91C1C)
+            badgeLabel.setBackground(new Color(254, 226, 226));
+            badgeLabel.setForeground(new Color(185, 28, 28));
         } else {
-            badgeLabel.setBackground(new Color(241, 245, 249)); // Slate tint (#F1F5F9)
-            badgeLabel.setForeground(new Color(71, 85, 105));    // Slate text (#475569)
+            badgeLabel.setBackground(new Color(241, 245, 249));
+            badgeLabel.setForeground(new Color(71, 85, 105));
         }
 
         if (isSelected) {

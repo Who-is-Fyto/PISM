@@ -17,12 +17,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.function.BiConsumer;
 
-/**
- * Fyto PIMS — Pharmacy Inventory Management System
- * Modern, responsive Authentication Frame built with FlatLaf styling.
- * Features a medical branding hero panel, real-time validation highlights,
- * show/hide password toggle, and keyboard navigation.
- */
+// Authentication frame for Fyto PIMS with login form and branding.
 public class LoginFrame extends JFrame {
 
     private JTextField txtUsername;
@@ -47,26 +42,16 @@ public class LoginFrame extends JFrame {
         setSize(960, 580);
         setLocationRelativeTo(null);
 
-        // Main 2-column container: Left Hero (400px), Right Form (560px)
+        // Main 2-column layout: branding hero on left, login form on right
         JPanel mainContainer = new JPanel(new GridLayout(1, 2));
-
-        // 1. Left Brand Hero Panel
-        JPanel heroPanel = createHeroPanel();
-        mainContainer.add(heroPanel);
-
-        // 2. Right Authentication Form Panel
-        JPanel formPanel = createFormPanel();
-        mainContainer.add(formPanel);
-
+        mainContainer.add(createHeroPanel());
+        mainContainer.add(createFormPanel());
         setContentPane(mainContainer);
 
-        // Global Enter key listener for the window
         getRootPane().setDefaultButton(btnSignIn);
     }
 
-    /**
-     * Constructs the left-side branding hero panel with custom gradient and medical iconography.
-     */
+    // Creates the left branding hero panel with custom gradient and emblem
     private JPanel createHeroPanel() {
         JPanel heroPanel = new JPanel() {
             @Override
@@ -75,10 +60,10 @@ public class LoginFrame extends JFrame {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                // Elegant Medical Teal Gradient (Deep Emerald -> Ocean Cyan)
-                Color c1 = new Color(6, 78, 59);    // Deep Forest Teal (#064E3B)
-                Color c2 = new Color(13, 148, 136); // Medical Teal (#0D9488)
-                Color c3 = new Color(2, 132, 199);  // Clean Azure (#0284C7)
+                // Background gradient
+                Color c1 = new Color(6, 78, 59);
+                Color c2 = new Color(13, 148, 136);
+                Color c3 = new Color(2, 132, 199);
 
                 LinearGradientPaint gradient = new LinearGradientPaint(
                         0, 0, getWidth(), getHeight(),
@@ -88,7 +73,7 @@ public class LoginFrame extends JFrame {
                 g2.setPaint(gradient);
                 g2.fillRect(0, 0, getWidth(), getHeight());
 
-                // Subtle circular decorative background ambient glow
+                // Decorative background circles
                 g2.setColor(new Color(255, 255, 255, 12));
                 g2.fillOval(-60, -60, 240, 240);
                 g2.fillOval(getWidth() - 140, getHeight() - 160, 220, 220);
@@ -112,15 +97,11 @@ public class LoginFrame extends JFrame {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                // Badge Container Rounded Square (Emerald Glow)
-                g2.setColor(new Color(16, 185, 129)); // #10B981 Emerald
+                g2.setColor(new Color(16, 185, 129));
                 g2.fillRoundRect(0, 0, 56, 56, 16, 16);
 
-                // White Cross Geometry
                 g2.setColor(Color.WHITE);
-                // Vertical bar
                 g2.fillRoundRect(22, 12, 12, 32, 4, 4);
-                // Horizontal bar
                 g2.fillRoundRect(12, 22, 32, 12, 4, 4);
 
                 g2.dispose();
@@ -140,7 +121,6 @@ public class LoginFrame extends JFrame {
         contentPanel.add(crossBadge);
         contentPanel.add(Box.createVerticalStrut(22));
 
-        // Title: Fyto PIMS
         JLabel lblTitle = new JLabel("Fyto PIMS");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 32));
         lblTitle.setForeground(Color.WHITE);
@@ -149,16 +129,14 @@ public class LoginFrame extends JFrame {
 
         contentPanel.add(Box.createVerticalStrut(6));
 
-        // Subtitle
         JLabel lblSubtitle = new JLabel("Pharmacy Inventory & Dispensing Suite");
         lblSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-        lblSubtitle.setForeground(new Color(209, 250, 229)); // Mint tint (#D1FAE5)
+        lblSubtitle.setForeground(new Color(209, 250, 229));
         lblSubtitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentPanel.add(lblSubtitle);
 
         contentPanel.add(Box.createVerticalStrut(28));
 
-        // Thin divider
         JSeparator sep = new JSeparator();
         sep.setMaximumSize(new Dimension(320, 2));
         sep.setForeground(new Color(255, 255, 255, 60));
@@ -167,7 +145,6 @@ public class LoginFrame extends JFrame {
 
         contentPanel.add(Box.createVerticalStrut(24));
 
-        // Feature Highlights Bullet List
         String[] features = {
                 "Intelligent Stock & Reorder Tracking",
                 "Rapid Point-of-Sale Dispensing",
@@ -182,7 +159,7 @@ public class LoginFrame extends JFrame {
 
             JLabel checkIcon = new JLabel("✓ ");
             checkIcon.setFont(new Font("Segoe UI", Font.BOLD, 14));
-            checkIcon.setForeground(new Color(52, 211, 153)); // Soft emerald
+            checkIcon.setForeground(new Color(52, 211, 153));
 
             JLabel textLabel = new JLabel(feature);
             textLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -196,7 +173,7 @@ public class LoginFrame extends JFrame {
 
         heroPanel.add(contentPanel, BorderLayout.CENTER);
 
-        // Bottom status indicator in hero panel
+        // Status indicator at bottom of hero panel
         JPanel bottomHero = new JPanel(new FlowLayout(FlowLayout.LEFT, 6, 0));
         bottomHero.setOpaque(false);
 
@@ -215,9 +192,7 @@ public class LoginFrame extends JFrame {
         return heroPanel;
     }
 
-    /**
-     * Constructs the right-side modern authentication form.
-     */
+    // Creates the login input form panel
     private JPanel createFormPanel() {
         JPanel formPanel = new JPanel();
         formPanel.setBackground(Color.WHITE);
@@ -228,10 +203,9 @@ public class LoginFrame extends JFrame {
         centerContainer.setOpaque(false);
         centerContainer.setLayout(new BoxLayout(centerContainer, BoxLayout.Y_AXIS));
 
-        // Form Greeting
         JLabel lblHeader = new JLabel("Sign In");
         lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        lblHeader.setForeground(new Color(15, 23, 42)); // #0F172A
+        lblHeader.setForeground(new Color(15, 23, 42));
         lblHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
         centerContainer.add(lblHeader);
 
@@ -239,20 +213,18 @@ public class LoginFrame extends JFrame {
 
         JLabel lblSubHeader = new JLabel("Enter your pharmacy credentials to access your terminal.");
         lblSubHeader.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        lblSubHeader.setForeground(new Color(100, 116, 139)); // #64748B
+        lblSubHeader.setForeground(new Color(100, 116, 139));
         lblSubHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
         centerContainer.add(lblSubHeader);
 
         centerContainer.add(Box.createVerticalStrut(18));
 
-        // Inline Alert / Error Banner (Hidden by default)
         alertBanner = createAlertBanner();
         alertBanner.setAlignmentX(Component.LEFT_ALIGNMENT);
         centerContainer.add(alertBanner);
 
         centerContainer.add(Box.createVerticalStrut(14));
 
-        // 1. Username Field
         JLabel lblUsername = new JLabel("Username or Staff ID");
         lblUsername.setFont(new Font("Segoe UI", Font.BOLD, 12));
         lblUsername.setForeground(new Color(51, 65, 85));
@@ -282,7 +254,6 @@ public class LoginFrame extends JFrame {
 
         centerContainer.add(Box.createVerticalStrut(16));
 
-        // 2. Password Field
         JLabel lblPassword = new JLabel("Password");
         lblPassword.setFont(new Font("Segoe UI", Font.BOLD, 12));
         lblPassword.setForeground(new Color(51, 65, 85));
@@ -311,7 +282,7 @@ public class LoginFrame extends JFrame {
 
         centerContainer.add(Box.createVerticalStrut(10));
 
-        // Show password checkbox and role helper row
+        // Show/hide password checkbox
         JPanel helperRow = new JPanel(new BorderLayout());
         helperRow.setOpaque(false);
         helperRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
@@ -335,11 +306,10 @@ public class LoginFrame extends JFrame {
 
         centerContainer.add(Box.createVerticalStrut(22));
 
-        // 3. Primary Sign In Button
         btnSignIn = new JButton("Sign In to Terminal");
         btnSignIn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnSignIn.setForeground(Color.WHITE);
-        btnSignIn.setBackground(new Color(13, 148, 136)); // Medical Teal (#0D9488)
+        btnSignIn.setBackground(new Color(13, 148, 136));
         btnSignIn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
         btnSignIn.setPreferredSize(new Dimension(360, 44));
         btnSignIn.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -350,7 +320,6 @@ public class LoginFrame extends JFrame {
 
         centerContainer.add(Box.createVerticalStrut(10));
 
-        // 4. Secondary Exit Button
         btnExit = new JButton("Exit Application");
         btnExit.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         btnExit.setForeground(new Color(100, 116, 139));
@@ -365,7 +334,7 @@ public class LoginFrame extends JFrame {
 
         centerContainer.add(Box.createVerticalGlue());
 
-        // Quick Demo Credentials Card at bottom of form
+        // Quick demo credentials hint card
         JPanel demoCard = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 8));
         demoCard.setBackground(new Color(248, 250, 252));
         demoCard.setBorder(BorderFactory.createCompoundBorder(
@@ -385,12 +354,10 @@ public class LoginFrame extends JFrame {
         return formPanel;
     }
 
-    /**
-     * Alert banner rendering inline errors or status messages cleanly.
-     */
+    // Creates the inline alert banner for validation errors
     private JPanel createAlertBanner() {
         JPanel banner = new JPanel(new BorderLayout(8, 0));
-        banner.setBackground(new Color(254, 242, 242)); // Soft red tint (#FEF2F2)
+        banner.setBackground(new Color(254, 242, 242));
         banner.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(248, 113, 113), 1, true),
                 new EmptyBorder(8, 12, 8, 12)
@@ -411,12 +378,12 @@ public class LoginFrame extends JFrame {
         return banner;
     }
 
+    // Validates inputs and initiates authentication
     private void handleSignInAction() {
         clearFieldErrors();
         String username = txtUsername.getText().trim();
         String password = new String(txtPassword.getPassword()).trim();
 
-        // 1. Validate non-empty username
         if (username.isEmpty()) {
             txtUsername.putClientProperty(FlatClientProperties.OUTLINE, FlatClientProperties.OUTLINE_ERROR);
             txtUsername.requestFocusInWindow();
@@ -424,7 +391,6 @@ public class LoginFrame extends JFrame {
             return;
         }
 
-        // 2. Validate non-empty password
         if (password.isEmpty()) {
             txtPassword.putClientProperty(FlatClientProperties.OUTLINE, FlatClientProperties.OUTLINE_ERROR);
             txtPassword.requestFocusInWindow();
@@ -432,14 +398,13 @@ public class LoginFrame extends JFrame {
             return;
         }
 
-        // 3. Delegate to callback if provided
         if (loginCallback != null) {
             setBusy(true);
             loginCallback.accept(username, password);
             return;
         }
 
-        // 4. Authenticate via UserDAO (MySQL DB or Mock Fallback)
+        // Authenticate via UserDAO (MySQL DB or fallback cache)
         setBusy(true);
         Timer timer = new Timer(350, (ActionEvent e) -> {
             setBusy(false);
@@ -542,9 +507,7 @@ public class LoginFrame extends JFrame {
         return new String(txtPassword.getPassword());
     }
 
-    /**
-     * Standalone main runner with FlatLaf setup.
-     */
+    // Main entry point for standalone launch
     public static void main(String[] args) {
         FlatLightLaf.setup();
         UIManager.put("Button.arc", 10);

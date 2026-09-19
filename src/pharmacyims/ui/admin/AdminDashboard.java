@@ -34,10 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-/**
- * Fyto PIMS — Master Administrator Dashboard.
- * Complete management of Inventory, Suppliers, Cashier Accounts, and Financial Insights.
- */
+// Administrator dashboard for managing inventory, suppliers, users, and reports.
 public class AdminDashboard extends JFrame {
 
     private static final String CARD_MEDICINES = "MEDICINES";
@@ -50,35 +47,29 @@ public class AdminDashboard extends JFrame {
     private final UserDAO userDAO = new UserDAO();
     private final SaleDAO saleDAO = new SaleDAO();
 
-    // Top Metric Cards
     private MetricCard cardTotalMedicines;
     private MetricCard cardLowStock;
     private MetricCard cardExpiring;
     private MetricCard cardTotalSuppliers;
 
-    // Navigation & Layout
     private CardLayout cardLayout;
     private JPanel contentCardsPanel;
     private final List<JButton> navButtons = new ArrayList<>();
 
-    // Medicine Tab Components
     private JTextField txtMedSearch;
     private JComboBox<String> cmbMedTypeFilter;
     private DefaultTableModel medTableModel;
     private JTable medTable;
     private TableRowSorter<DefaultTableModel> medSorter;
 
-    // Supplier Tab Components
     private JTextField txtSupSearch;
     private DefaultTableModel supTableModel;
     private JTable supTable;
     private TableRowSorter<DefaultTableModel> supSorter;
 
-    // User Tab Components
     private DefaultTableModel userTableModel;
     private JTable userTable;
 
-    // Reports Tab Component
     private ReportsPanel reportsPanel;
 
     public AdminDashboard() {
@@ -109,30 +100,22 @@ public class AdminDashboard extends JFrame {
 
     private void initUI() {
         JPanel rootPanel = new JPanel(new BorderLayout());
-        rootPanel.setBackground(new Color(248, 250, 252)); // Light slate bg (#F8FAFC)
+        rootPanel.setBackground(new Color(248, 250, 252));
 
-        // 1. Top Header Bar
         HeaderBar headerBar = new HeaderBar(this, "Administrator Management Portal");
         rootPanel.add(headerBar, BorderLayout.NORTH);
 
-        // 2. Main Body: Left Sidebar + Center Workspace
         JPanel bodyPanel = new JPanel(new BorderLayout(16, 16));
         bodyPanel.setOpaque(false);
         bodyPanel.setBorder(new EmptyBorder(16, 18, 16, 18));
 
-        // Left Navigation Sidebar
-        JPanel sidebarPanel = createSidebar();
-        bodyPanel.add(sidebarPanel, BorderLayout.WEST);
+        bodyPanel.add(createSidebar(), BorderLayout.WEST);
 
-        // Center Content Workspace (Metrics Row + Card Panels)
+        // Center workspace with KPI metrics and tab content
         JPanel workspacePanel = new JPanel(new BorderLayout(0, 16));
         workspacePanel.setOpaque(false);
+        workspacePanel.add(createMetricsRow(), BorderLayout.NORTH);
 
-        // Metrics Row
-        JPanel metricsPanel = createMetricsRow();
-        workspacePanel.add(metricsPanel, BorderLayout.NORTH);
-
-        // Card Container for Tabs
         cardLayout = new CardLayout();
         contentCardsPanel = new JPanel(cardLayout);
         contentCardsPanel.setOpaque(false);
@@ -150,9 +133,7 @@ public class AdminDashboard extends JFrame {
         setContentPane(rootPanel);
     }
 
-    /**
-     * Top 4 KPI metric cards displaying live system health.
-     */
+    // Top KPI metric cards showing live inventory and vendor stats
     private JPanel createMetricsRow() {
         JPanel row = new JPanel(new GridLayout(1, 4, 14, 0));
         row.setOpaque(false);
@@ -170,9 +151,7 @@ public class AdminDashboard extends JFrame {
         return row;
     }
 
-    /**
-     * Left modern sidebar navigation panel.
-     */
+    // Navigation sidebar panel
     private JPanel createSidebar() {
         JPanel sidebar = new JPanel();
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
@@ -295,10 +274,7 @@ public class AdminDashboard extends JFrame {
         }
     }
 
-    // =========================================================================
-    // TAB 1: MEDICINE INVENTORY PANEL
-    // =========================================================================
-
+    // Medicine inventory management tab
     private JPanel createMedicinesPanel() {
         JPanel panel = new JPanel(new BorderLayout(0, 12));
         panel.setBackground(Color.WHITE);
@@ -308,11 +284,9 @@ public class AdminDashboard extends JFrame {
         ));
         panel.putClientProperty(FlatClientProperties.STYLE, "arc: 12;");
 
-        // Action Toolbar
         JPanel toolbar = new JPanel(new BorderLayout(12, 0));
         toolbar.setOpaque(false);
 
-        // Left Filters: Search input + Dosage Type dropdown
         JPanel leftFilters = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         leftFilters.setOpaque(false);
 
@@ -334,7 +308,6 @@ public class AdminDashboard extends JFrame {
 
         toolbar.add(leftFilters, BorderLayout.WEST);
 
-        // Right Actions: Add, Edit, Delete, Refresh
         JPanel rightActions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         rightActions.setOpaque(false);
 
@@ -557,10 +530,7 @@ public class AdminDashboard extends JFrame {
         }
     }
 
-    // =========================================================================
-    // TAB 2: SUPPLIER DIRECTORY PANEL
-    // =========================================================================
-
+    // Supplier directory management tab
     private JPanel createSuppliersPanel() {
         JPanel panel = new JPanel(new BorderLayout(0, 12));
         panel.setBackground(Color.WHITE);
@@ -570,11 +540,9 @@ public class AdminDashboard extends JFrame {
         ));
         panel.putClientProperty(FlatClientProperties.STYLE, "arc: 12;");
 
-        // Toolbar
         JPanel toolbar = new JPanel(new BorderLayout(12, 0));
         toolbar.setOpaque(false);
 
-        // Search
         JPanel leftSearch = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         leftSearch.setOpaque(false);
 
@@ -589,7 +557,6 @@ public class AdminDashboard extends JFrame {
         leftSearch.add(txtSupSearch);
         toolbar.add(leftSearch, BorderLayout.WEST);
 
-        // Buttons: Add, Edit, Delete, Refresh
         JPanel rightActions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         rightActions.setOpaque(false);
 
@@ -772,10 +739,7 @@ public class AdminDashboard extends JFrame {
         }
     }
 
-    // =========================================================================
-    // TAB 3: CASHIER ACCOUNTS & ACCESS CONTROL PANEL
-    // =========================================================================
-
+    // Cashier accounts and access control tab
     private JPanel createUsersPanel() {
         JPanel panel = new JPanel(new BorderLayout(0, 12));
         panel.setBackground(Color.WHITE);
@@ -785,7 +749,6 @@ public class AdminDashboard extends JFrame {
         ));
         panel.putClientProperty(FlatClientProperties.STYLE, "arc: 12;");
 
-        // Action Toolbar
         JPanel toolbar = new JPanel(new BorderLayout());
         toolbar.setOpaque(false);
 
@@ -945,14 +908,7 @@ public class AdminDashboard extends JFrame {
         }
     }
 
-    // =========================================================================
-    // TAB 4: FINANCIAL & INVENTORY INSIGHTS / REPORTS SUMMARY PANEL
-    // =========================================================================
-
-    // =========================================================================
-    // GLOBAL REFRESH & METRICS
-    // =========================================================================
-
+    // Refreshes all tabs and metric counters
     public void refreshAll() {
         reloadMedicines();
         reloadSuppliers();

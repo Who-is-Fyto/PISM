@@ -2,9 +2,7 @@ package pharmacyims.session;
 
 import pharmacyims.model.User;
 
-/**
- * Thread-safe global session context for the currently authenticated staff member.
- */
+// Global session context for the authenticated user.
 public class UserSession {
     private static volatile UserSession instance;
     private final User currentUser;

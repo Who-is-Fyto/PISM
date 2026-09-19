@@ -27,30 +27,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Fyto PIMS — Point-of-Sale (POS) Cashier Dispensing Portal.
- * High-speed prescription dispensing, cart management, real-time stock deduction,
- * and thermal receipt generation.
- */
+// Cashier point-of-sale dashboard for dispensing medicines and processing checkout.
 public class CashierDashboard extends JFrame {
 
     private final MedicineDAO medicineDAO = new MedicineDAO();
     private final SaleDAO saleDAO = new SaleDAO();
 
-    // In-memory active cart items
     private final List<SaleItem> cartItems = new ArrayList<>();
     private final List<Medicine> cartMedicines = new ArrayList<>();
 
-    // UI Panels
     private StockLookupPanel stockLookupPanel;
 
-    // Cart Table Components
     private DefaultTableModel cartTableModel;
     private JTable cartTable;
     private JButton btnRemoveItem;
     private JButton btnClearCart;
 
-    // Bill Summary Components
     private JLabel lblGrandTotal;
     private JTextField txtAmountPaid;
     private JLabel lblChangeDue;
@@ -108,21 +100,18 @@ public class CashierDashboard extends JFrame {
         JPanel rootPanel = new JPanel(new BorderLayout());
         rootPanel.setBackground(new Color(248, 250, 252));
 
-        // 1. Top Header Bar
         HeaderBar headerBar = new HeaderBar(this, "Point-of-Sale (POS) Dispensing Portal");
         rootPanel.add(headerBar, BorderLayout.NORTH);
 
-        // 2. Main Workspace Split: Left (Search & Stock Lookup) + Right (Cart & Checkout)
+        // Split view: stock lookup on left, dispensing cart on right
         JPanel workspace = new JPanel(new GridLayout(1, 2, 16, 0));
         workspace.setOpaque(false);
         workspace.setBorder(new EmptyBorder(16, 18, 16, 18));
 
-        // Left Panel: Stock Lookup
         stockLookupPanel = new StockLookupPanel(medicineDAO);
         stockLookupPanel.setOnAddToCartListener(this::addItemToCart);
         workspace.add(stockLookupPanel);
 
-        // Right Panel: Active Cart & Checkout Panel
         JPanel rightPanel = createCartAndCheckoutPanel();
         workspace.add(rightPanel);
 
@@ -287,10 +276,7 @@ public class CashierDashboard extends JFrame {
         return summary;
     }
 
-    // =========================================================================
-    // CART OPERATIONS
-    // =========================================================================
-
+    // Cart management operations
     public void addItemToCart(Medicine med, int quantityToAdd) {
         // Check if medicine is already in cart
         int existingIndex = -1;
@@ -426,10 +412,7 @@ public class CashierDashboard extends JFrame {
         }
     }
 
-    // =========================================================================
-    // CHECKOUT TRANSACTION
-    // =========================================================================
-
+    // Processes checkout transaction and displays receipt
     public void handleCheckout() {
         if (cartItems.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Cart is empty. Add medicines before checkout.", "Empty Cart", JOptionPane.WARNING_MESSAGE);
@@ -459,21 +442,20 @@ public class CashierDashboard extends JFrame {
         sale.setCashierName(UserSession.getInstance() != null ? UserSession.getInstance().getFullName() : "Jane Doe");
 
         try {
-            // Atomic transaction in SaleDAO
+            // Save sale and line items atomically
             int saleId = saleDAO.processSale(sale, new ArrayList<>(cartItems));
             sale.setSaleId(saleId);
 
-            // Pop up the Thermal Receipt Print Dialog
+            // Display printable thermal receipt
             BillReceiptDialog receiptDialog = new BillReceiptDialog(this, sale, new ArrayList<>(cartItems));
             receiptDialog.setVisible(true);
 
-            // Reset cart & payment fields for next customer
+            // Reset cart for next customer
             cartItems.clear();
             cartMedicines.clear();
             txtAmountPaid.setText("");
             refreshCartTable();
 
-            // Refresh medicine catalog to reflect decremented stock
             stockLookupPanel.reloadMedicines();
 
         } catch (SQLException ex) {
@@ -486,31 +468,24 @@ public class CashierDashboard extends JFrame {
         }
     }
 
-    // =========================================================================
-    // KEYBOARD SHORTCUTS
-    // =========================================================================
-
+    // Keyboard shortcuts for fast terminal operation (F1 search, F2 add, F5 checkout, Delete remove)
     private void setupShortcuts() {
         JRootPane root = getRootPane();
 
-        // F1 -> Focus Search
         root.registerKeyboardAction(e -> stockLookupPanel.focusSearch(),
                 KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        // F2 -> Add to Cart
         root.registerKeyboardAction(e -> stockLookupPanel.handleAddToCartAction(),
                 KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0),
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        // F5 -> Complete Sale / Checkout
         root.registerKeyboardAction(e -> {
             if (btnCompleteSale.isEnabled()) {
                 handleCheckout();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        // Delete -> Remove selected cart item
         root.registerKeyboardAction(e -> {
             if (btnRemoveItem.isEnabled()) {
                 removeSelectedCartItem();

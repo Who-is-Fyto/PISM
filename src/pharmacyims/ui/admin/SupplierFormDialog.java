@@ -9,9 +9,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.regex.Pattern;
 
-/**
- * Modern modal form dialog for Adding and Editing Suppliers in Fyto PIMS.
- */
+// Form dialog for adding and editing suppliers.
 public class SupplierFormDialog extends JDialog {
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
@@ -44,7 +42,7 @@ public class SupplierFormDialog extends JDialog {
         mainPanel.setBackground(Color.WHITE);
         mainPanel.setBorder(new EmptyBorder(24, 28, 24, 28));
 
-        // 1. Header Banner
+        // Header
         JPanel headerPanel = new JPanel(new GridLayout(2, 1, 0, 4));
         headerPanel.setOpaque(false);
 
@@ -60,7 +58,7 @@ public class SupplierFormDialog extends JDialog {
         headerPanel.add(lblSubtitle);
         mainPanel.add(headerPanel, BorderLayout.NORTH);
 
-        // 2. Form Grid Body
+        // Input fields grid
         JPanel formGrid = new JPanel(new GridBagLayout());
         formGrid.setOpaque(false);
         formGrid.setBorder(new EmptyBorder(16, 0, 16, 0));
@@ -71,31 +69,26 @@ public class SupplierFormDialog extends JDialog {
 
         int row = 0;
 
-        // Company / Supplier Name
         txtName = new JTextField();
         txtName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. Apex Bioscience");
         txtName.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Supplier / Company Name *", txtName);
 
-        // Contact Person
         txtContactPerson = new JTextField();
         txtContactPerson.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. Sarah Connor");
         txtContactPerson.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Contact Person *", txtContactPerson);
 
-        // Phone Number
         txtPhone = new JTextField();
         txtPhone.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. +1 (555) 024-8891");
         txtPhone.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Phone Number *", txtPhone);
 
-        // Email Address
         txtEmail = new JTextField();
         txtEmail.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. supply@apexbio.com");
         txtEmail.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Email Address *", txtEmail);
 
-        // Physical Address (Multi-line)
         txtAddress = new JTextArea(3, 20);
         txtAddress.setLineWrap(true);
         txtAddress.setWrapStyleWord(true);
@@ -106,7 +99,7 @@ public class SupplierFormDialog extends JDialog {
 
         mainPanel.add(formGrid, BorderLayout.CENTER);
 
-        // 3. Bottom Error Label and Action Buttons
+        // Actions panel
         JPanel bottomPanel = new JPanel(new BorderLayout(0, 10));
         bottomPanel.setOpaque(false);
 
@@ -124,7 +117,7 @@ public class SupplierFormDialog extends JDialog {
         btnRow.add(btnCancel);
 
         JButton btnSave = new JButton(existingSupplier == null ? "Save Supplier" : "Update Changes");
-        btnSave.setBackground(new Color(13, 148, 136)); // Medical Teal
+        btnSave.setBackground(new Color(13, 148, 136));
         btnSave.setForeground(Color.WHITE);
         btnSave.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnSave.putClientProperty(FlatClientProperties.STYLE, "arc: 8; hoverBackground: #0F766E;");
@@ -134,7 +127,7 @@ public class SupplierFormDialog extends JDialog {
         bottomPanel.add(btnRow, BorderLayout.SOUTH);
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Populate fields if editing
+        // Pre-fill fields when editing
         if (existingSupplier != null) {
             txtName.setText(existingSupplier.getName());
             txtContactPerson.setText(existingSupplier.getContactPerson());

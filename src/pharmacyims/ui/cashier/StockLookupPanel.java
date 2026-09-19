@@ -22,9 +22,7 @@ import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 
-/**
- * Product search, inventory stock verification, and dispensing selection panel for cashiers.
- */
+// Product search and inventory lookup panel for dispensing workflow.
 public class StockLookupPanel extends JPanel {
 
     private final MedicineDAO medicineDAO;
@@ -35,7 +33,7 @@ public class StockLookupPanel extends JPanel {
     private JTable catalogTable;
     private TableRowSorter<DefaultTableModel> catalogSorter;
 
-    // Selected Medicine Details View
+    // Selected product details view
     private Medicine selectedMedicine;
     private JLabel lblSelectedName;
     private JLabel lblSelectedCompany;
@@ -45,7 +43,6 @@ public class StockLookupPanel extends JPanel {
     private JLabel lblSelectedExpiry;
     private JLabel lblStockBadge;
 
-    // Quantity controls
     private JSpinner spinQuantity;
     private SpinnerNumberModel spinModel;
     private JButton btnAddToCart;
@@ -65,7 +62,7 @@ public class StockLookupPanel extends JPanel {
         ));
         putClientProperty(FlatClientProperties.STYLE, "arc: 12;");
 
-        // 1. Top Section: Search Bar
+        // Top search bar
         JPanel topSection = new JPanel(new BorderLayout(8, 6));
         topSection.setOpaque(false);
 
@@ -87,7 +84,7 @@ public class StockLookupPanel extends JPanel {
 
         add(topSection, BorderLayout.NORTH);
 
-        // 2. Center Section: Available Medicine Table
+        // Catalog table showing available products and stock
         String[] cols = {"ID", "Medicine Name", "Type", "Unit Price", "Stock", "Status"};
         catalogModel = new DefaultTableModel(cols, 0) {
             @Override public boolean isCellEditable(int row, int col) { return false; }
@@ -123,7 +120,6 @@ public class StockLookupPanel extends JPanel {
         catalogTable.getColumnModel().getColumn(4).setPreferredWidth(55);
         catalogTable.getColumnModel().getColumn(5).setPreferredWidth(85);
 
-        // Selection Listener: Updates the preview card
         catalogTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 handleTableSelection();
@@ -134,7 +130,7 @@ public class StockLookupPanel extends JPanel {
         scrollTable.setBorder(BorderFactory.createLineBorder(new Color(226, 232, 240), 1));
         add(scrollTable, BorderLayout.CENTER);
 
-        // 3. Bottom Section: Selected Product Details Card + Quantity + Add Button
+        // Bottom details preview and quantity controls
         JPanel bottomSection = new JPanel(new BorderLayout(0, 10));
         bottomSection.setOpaque(false);
 

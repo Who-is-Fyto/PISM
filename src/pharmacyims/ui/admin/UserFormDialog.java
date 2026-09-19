@@ -8,9 +8,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-/**
- * Modern modal form dialog for registering new Cashier accounts in Fyto PIMS.
- */
+// Form dialog for registering cashier accounts.
 public class UserFormDialog extends JDialog {
 
     private final UserDAO userDAO;
@@ -38,7 +36,7 @@ public class UserFormDialog extends JDialog {
         mainPanel.setBackground(Color.WHITE);
         mainPanel.setBorder(new EmptyBorder(24, 28, 24, 28));
 
-        // 1. Header Banner
+        // Header
         JPanel headerPanel = new JPanel(new GridLayout(2, 1, 0, 4));
         headerPanel.setOpaque(false);
 
@@ -54,7 +52,7 @@ public class UserFormDialog extends JDialog {
         headerPanel.add(lblSubtitle);
         mainPanel.add(headerPanel, BorderLayout.NORTH);
 
-        // 2. Form Grid Body
+        // Input fields grid
         JPanel formGrid = new JPanel(new GridBagLayout());
         formGrid.setOpaque(false);
         formGrid.setBorder(new EmptyBorder(20, 0, 16, 0));
@@ -65,19 +63,16 @@ public class UserFormDialog extends JDialog {
 
         int row = 0;
 
-        // Staff Full Name
         txtFullName = new JTextField();
         txtFullName.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. Jane Doe");
         txtFullName.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Full Staff Name *", txtFullName);
 
-        // Username / Login ID
         txtUsername = new JTextField();
         txtUsername.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. cashier3");
         txtUsername.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "System Username *", txtUsername);
 
-        // System Role (Display-only pill)
         JTextField txtRole = new JTextField("Cashier (Point of Sale)");
         txtRole.setEditable(false);
         txtRole.setBackground(new Color(241, 245, 249));
@@ -85,13 +80,11 @@ public class UserFormDialog extends JDialog {
         txtRole.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         addField(formGrid, gbc, row++, "Assigned Role", txtRole);
 
-        // Password
         txtPassword = new JPasswordField();
         txtPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Minimum 6 characters");
         txtPassword.putClientProperty(FlatClientProperties.STYLE, "arc: 8; showRevealButton: true;");
         addField(formGrid, gbc, row++, "Initial Password *", txtPassword);
 
-        // Confirm Password
         txtConfirmPassword = new JPasswordField();
         txtConfirmPassword.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Re-type password");
         txtConfirmPassword.putClientProperty(FlatClientProperties.STYLE, "arc: 8; showRevealButton: true;");
@@ -99,7 +92,7 @@ public class UserFormDialog extends JDialog {
 
         mainPanel.add(formGrid, BorderLayout.CENTER);
 
-        // 3. Bottom Error Label and Action Buttons
+        // Actions panel
         JPanel bottomPanel = new JPanel(new BorderLayout(0, 10));
         bottomPanel.setOpaque(false);
 
@@ -117,7 +110,7 @@ public class UserFormDialog extends JDialog {
         btnRow.add(btnCancel);
 
         JButton btnSave = new JButton("Create Cashier Account");
-        btnSave.setBackground(new Color(13, 148, 136)); // Medical Teal
+        btnSave.setBackground(new Color(13, 148, 136));
         btnSave.setForeground(Color.WHITE);
         btnSave.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnSave.putClientProperty(FlatClientProperties.STYLE, "arc: 8; hoverBackground: #0F766E;");

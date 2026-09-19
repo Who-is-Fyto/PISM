@@ -8,10 +8,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Thread-safe Database Connection Manager for Fyto PIMS.
- * Reads credentials from db.properties and manages JDBC connections.
- */
+// Database connection manager for Fyto PIMS.
 public class DBConnection {
     private static final Logger LOGGER = Logger.getLogger(DBConnection.class.getName());
 
@@ -25,6 +22,7 @@ public class DBConnection {
         loadConfiguration();
     }
 
+    // Loads connection properties from classpath or resources folder
     private static synchronized void loadConfiguration() {
         if (initialized) return;
 
@@ -33,7 +31,6 @@ public class DBConnection {
             if (in != null) {
                 props.load(in);
             } else {
-                // Fallback to checking direct file path
                 java.io.File file = new java.io.File("resources/db.properties");
                 if (file.exists()) {
                     try (java.io.FileInputStream fis = new java.io.FileInputStream(file)) {
@@ -60,9 +57,7 @@ public class DBConnection {
         }
     }
 
-    /**
-     * Obtains a live JDBC Connection to MySQL.
-     */
+    // Returns a live JDBC Connection
     public static Connection getConnection() throws SQLException {
         if (!initialized) {
             loadConfiguration();
@@ -70,9 +65,7 @@ public class DBConnection {
         return DriverManager.getConnection(url, username, password);
     }
 
-    /**
-     * Non-throwing test of database connectivity.
-     */
+    // Tests database connectivity without throwing exceptions
     public static boolean testConnection() {
         try (Connection conn = getConnection()) {
             return conn != null && !conn.isClosed();

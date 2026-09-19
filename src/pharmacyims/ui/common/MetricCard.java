@@ -6,19 +6,17 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-/**
- * Modern KPI / summary statistic card widget for Fyto PIMS dashboards.
- */
+// KPI summary metric card widget.
 public class MetricCard extends JPanel {
 
     private final JLabel lblValue;
     private final JLabel lblSubtitle;
 
     public enum CardTheme {
-        PRIMARY(new Color(2, 132, 199), new Color(240, 249, 255)),   // Azure (#0284C7 / #F0F9FF)
-        SUCCESS(new Color(16, 185, 129), new Color(236, 253, 245)), // Emerald (#10B981 / #ECFDF5)
-        WARNING(new Color(245, 158, 11), new Color(255, 251, 235)), // Amber (#F59E0B / #FFFBEB)
-        DANGER(new Color(239, 68, 68), new Color(254, 242, 242));   // Crimson (#EF4444 / #FEF2F2)
+        PRIMARY(new Color(2, 132, 199), new Color(240, 249, 255)),
+        SUCCESS(new Color(16, 185, 129), new Color(236, 253, 245)),
+        WARNING(new Color(245, 158, 11), new Color(255, 251, 235)),
+        DANGER(new Color(239, 68, 68), new Color(254, 242, 242));
 
         final Color accentColor;
         final Color backgroundColor;
@@ -38,13 +36,12 @@ public class MetricCard extends JPanel {
         ));
         putClientProperty(FlatClientProperties.STYLE, "arc: 12;");
 
-        // Top Header: Title + Accent Pill
         JPanel topRow = new JPanel(new BorderLayout());
         topRow.setOpaque(false);
 
         JLabel lblTitle = new JLabel(title);
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        lblTitle.setForeground(new Color(100, 116, 139)); // Slate muted
+        lblTitle.setForeground(new Color(100, 116, 139));
         topRow.add(lblTitle, BorderLayout.WEST);
 
         // Accent indicator bar/pill

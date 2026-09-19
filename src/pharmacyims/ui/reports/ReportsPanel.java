@@ -33,14 +33,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-/**
- * Fyto PIMS — Master Business Reporting & Analytics Dashboard.
- * Supports 3 Analytical Streams:
- * 1. Sales Performance & Revenue Analytics
- * 2. Inventory Low Stock & Reorder Surveillance
- * 3. Expiration Date & Risk Analysis
- * Includes instant CSV export and printable audit summaries.
- */
+// Business reporting and analytics panel for sales, stock, and expiry streams.
 public class ReportsPanel extends JPanel {
 
     private enum ReportStream {
@@ -98,36 +91,32 @@ public class ReportsPanel extends JPanel {
         ));
         putClientProperty(FlatClientProperties.STYLE, "arc: 12;");
 
-        // 1. Top Section: Stream Selector Pill Bar + Filter Bar
+        // Stream selector and dynamic filter container
         JPanel topContainer = new JPanel(new BorderLayout(0, 12));
         topContainer.setOpaque(false);
 
-        // Stream Selector Bar
         JPanel streamBar = createStreamSelectorBar();
         topContainer.add(streamBar, BorderLayout.NORTH);
 
-        // Filter Bar (Dynamically populated based on active stream)
         filterContainer = new JPanel(new BorderLayout(12, 0));
         filterContainer.setOpaque(false);
         topContainer.add(filterContainer, BorderLayout.SOUTH);
 
         add(topContainer, BorderLayout.NORTH);
 
-        // 2. Center Section: 4 KPI Cards + Report JTable
+        // KPI metrics row and report table
         JPanel centerContainer = new JPanel(new BorderLayout(0, 14));
         centerContainer.setOpaque(false);
 
-        // 4 KPI Summary Cards Row
-        JPanel cardsRow = createMetricsRow();
-        centerContainer.add(cardsRow, BorderLayout.NORTH);
+        JPanel metricsRow = createMetricsRow();
+        centerContainer.add(metricsRow, BorderLayout.NORTH);
 
-        // Data Table
         JPanel tablePanel = createTablePanel();
         centerContainer.add(tablePanel, BorderLayout.CENTER);
 
         add(centerContainer, BorderLayout.CENTER);
 
-        // 3. Bottom Footer Summary Row
+        // Footer summary bar
         JPanel footerRow = new JPanel(new BorderLayout());
         footerRow.setOpaque(false);
         footerRow.setBorder(new EmptyBorder(6, 4, 2, 4));
@@ -247,10 +236,7 @@ public class ReportsPanel extends JPanel {
         return panel;
     }
 
-    // =========================================================================
-    // DYNAMIC FILTER BAR
-    // =========================================================================
-
+    // Rebuilds the filter bar according to the active stream
     private void rebuildFilterBar() {
         filterContainer.removeAll();
 
@@ -369,10 +355,7 @@ public class ReportsPanel extends JPanel {
         }
     }
 
-    // =========================================================================
-    // STREAM DATA LOADERS
-    // =========================================================================
-
+    // Loads data for current active reporting stream
     public void loadCurrentStream() {
         rebuildFilterBar();
         if (activeStream == ReportStream.SALES) {
@@ -392,9 +375,7 @@ public class ReportsPanel extends JPanel {
         }
     }
 
-    /**
-     * STREAM 1: Sales Performance & Revenue Analytics
-     */
+    // Loads sales performance and revenue records
     private void loadSalesData(LocalDate start, LocalDate end) {
         List<Sale> sales = saleDAO.getSalesByDateRange(start, end);
 
@@ -465,9 +446,7 @@ public class ReportsPanel extends JPanel {
         lblGrandSummary.setText("Total Revenue: " + currFmt.format(totalRevenue));
     }
 
-    /**
-     * STREAM 2: Low Stock & Reorder Surveillance
-     */
+    // Loads inventory items at or below reorder threshold
     private void loadLowStockData() {
         List<Medicine> allMeds = medicineDAO.getAllMedicines();
         List<Supplier> suppliers = supplierDAO.getAllSuppliers();
@@ -559,9 +538,7 @@ public class ReportsPanel extends JPanel {
         lblGrandSummary.setText("Total Estimated Restock Capital: " + currFmt.format(totalEstCost));
     }
 
-    /**
-     * STREAM 3: Expiration Date & Risk Analysis
-     */
+    // Loads medicines nearing expiration or expired
     private void loadExpiryData() {
         List<Medicine> allMeds = medicineDAO.getAllMedicines();
         LocalDate today = LocalDate.now();
@@ -653,10 +630,7 @@ public class ReportsPanel extends JPanel {
         lblGrandSummary.setText("Inventory Capital at Risk: " + currFmt.format(totalValueAtRisk));
     }
 
-    // =========================================================================
-    // MODALS & EXPORTS
-    // =========================================================================
-
+    // Line item inspection dialog and CSV export handling
     private void showSaleLineItemsDialog() {
         int selectedViewRow = reportTable.getSelectedRow();
         if (selectedViewRow == -1) return;

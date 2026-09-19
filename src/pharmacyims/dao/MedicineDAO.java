@@ -12,13 +12,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Data Access Object for Medicine inventory entities.
- */
+// Data access object for medicine catalog and stock inventory.
 public class MedicineDAO {
     private static final Logger LOGGER = Logger.getLogger(MedicineDAO.class.getName());
 
-    // In-memory fallback mock cache
+    // In-memory fallback cache
     private static final List<Medicine> MOCK_MEDICINES = new CopyOnWriteArrayList<>();
     static {
         LocalDate today = LocalDate.now();

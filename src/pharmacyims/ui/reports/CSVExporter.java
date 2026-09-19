@@ -12,9 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Utility for exporting JTable datasets to RFC 4180 compliant CSV files.
- */
+// Utility for exporting JTable datasets to CSV files.
 public class CSVExporter {
 
     public static boolean exportTableToCSV(Component parent, JTable table, String defaultBaseName) {
@@ -59,7 +57,7 @@ public class CSVExporter {
             int colCount = table.getColumnCount();
             int rowCount = table.getRowCount();
 
-            // 1. Write Header Row
+            // Write CSV headers
             for (int col = 0; col < colCount; col++) {
                 String header = table.getColumnName(col);
                 writer.write(escapeCSV(header));
@@ -67,7 +65,7 @@ public class CSVExporter {
             }
             writer.newLine();
 
-            // 2. Write Data Rows (respecting current table sort/view order)
+            // Write data rows
             for (int row = 0; row < rowCount; row++) {
                 for (int col = 0; col < colCount; col++) {
                     Object val = table.getValueAt(row, col);
