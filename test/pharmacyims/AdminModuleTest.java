@@ -16,32 +16,33 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Headless-safe verification test for Phase 3: Administrator Module & Dashboard UI.
- */
+// Tests the Admin features: adding medicines, adding suppliers, creating cashier accounts, and opening the dashboard
 public class AdminModuleTest {
 
     public static void main(String[] args) {
-        System.out.println(">>> Starting Fyto PIMS Phase 3: Admin Module Verification Test...");
+        System.out.println("Starting Admin Module tests...");
 
-        // 1. Initialize FlatLaf
+        // Set up the UI theme
         FlatLightLaf.setup();
 
-        // 2. Set active admin session
-        User adminUser = new User(1, "admin", "admin123", "Admin", "System Administrator");
-        UserSession.initialize(adminUser);
-        assertEq(UserSession.getInstance().isAdmin(), true, "UserSession must identify admin user");
-
-        // 3. Test DAOs directly
         MedicineDAO medDAO = new MedicineDAO();
         SupplierDAO supDAO = new SupplierDAO();
         UserDAO userDAO = new UserDAO();
 
-        // Test Medicine CRUD & metrics
-        int initialMedCount = medDAO.getTotalCount();
-        System.out.println("[INFO] Initial medicines in catalog: " + initialMedCount);
-        assertEq(initialMedCount >= 10, true, "Should have initial seed medicines");
+        // Log in as test admin
+        User adminUser = userDAO.authenticate("admin", "admin123");
+        if (adminUser == null) {
+            adminUser = new User(1, "admin", "admin123", "Admin", "System Administrator");
+        }
+        UserSession.initialize(adminUser);
+        check(UserSession.getInstance().isAdmin(), "Session recognized admin user");
 
+        // 1. Check medicine catalog
+        int initialMedCount = medDAO.getTotalCount();
+        System.out.println("Current medicines in catalog: " + initialMedCount);
+        check(initialMedCount >= 10, "Found initial medicines in database");
+
+        // 2. Add a new medicine
         Medicine newMed = new Medicine(
                 "Azithromycin 250mg",
                 "Apex Bioscience",
@@ -53,68 +54,71 @@ public class AdminModuleTest {
                 2
         );
         boolean medAdded = medDAO.addMedicine(newMed);
-        assertEq(medAdded, true, "MedicineDAO.addMedicine should succeed");
-        assertEq(newMed.getMedicineId() > 0, true, "Generated medicine ID should be > 0");
+        check(medAdded, "Added new medicine to catalog");
+        check(newMed.getMedicineId() > 0, "Medicine got an ID assigned");
 
+        // 3. Look up the newly added medicine
         Medicine fetchedMed = medDAO.getMedicineById(newMed.getMedicineId());
-        assertEq(fetchedMed != null, true, "Fetched medicine must not be null");
-        assertEq("Azithromycin 250mg".equals(fetchedMed.getName()), true, "Medicine name should match");
+        check(fetchedMed != null, "Successfully retrieved the medicine");
+        check("Azithromycin 250mg".equals(fetchedMed.getName()), "Medicine name matches what was entered");
 
-        // Test Supplier CRUD
+        // 4. Test supplier list and adding a new supplier
         int initialSupCount = supDAO.getAllSuppliers().size();
-        System.out.println("[INFO] Initial suppliers in catalog: " + initialSupCount);
-        assertEq(initialSupCount >= 4, true, "Should have initial seed suppliers");
+        System.out.println("Current suppliers count: " + initialSupCount);
+        check(initialSupCount >= 4, "Found initial suppliers in database");
 
         Supplier newSup = new Supplier("BioHealth Logistics", "Alice Cooper", "+1 (555) 777-8899", "alice@biohealth.com", "99 Harbor Boulevard");
         boolean supAdded = supDAO.addSupplier(newSup);
-        assertEq(supAdded, true, "SupplierDAO.addSupplier should succeed");
-        assertEq(newSup.getSupplierId() > 0, true, "Generated supplier ID should be > 0");
+        check(supAdded, "Added new supplier");
+        check(newSup.getSupplierId() > 0, "Supplier got an ID assigned");
 
-        // Test Cashier User creation & authentication
-        String testCashierUser = "test_cashier_" + System.currentTimeMillis();
+        // 5. Test creating a new cashier staff account
+        String testCashierUser = "cashier_test_" + System.currentTimeMillis();
         User newCashier = new User(testCashierUser, "pass12345", "Cashier", "Test Dispenser");
         boolean cashierCreated = userDAO.createCashier(newCashier);
-        assertEq(cashierCreated, true, "UserDAO.createCashier should succeed");
+        check(cashierCreated, "Created new cashier account");
 
+        // Verify the new cashier can log in
         User authenticatedCashier = userDAO.authenticate(testCashierUser, "pass12345");
-        assertEq(authenticatedCashier != null, true, "Newly created cashier must authenticate");
-        assertEq(authenticatedCashier.isCashier(), true, "Authenticated user must have Cashier role");
+        check(authenticatedCashier != null, "New cashier can log in");
+        check(authenticatedCashier.isCashier(), "New cashier has the Cashier role");
 
-        // Test Admin protection from deletion
+        // 6. Make sure admin cannot be accidentally deleted
         boolean adminDeleted = userDAO.deleteUser(adminUser.getUserId());
-        assertEq(!adminDeleted, true, "Admin account must be protected from deletion");
+        check(!adminDeleted, "Admin account cannot be deleted");
 
-        // 4. Test UI Instantiation on EDT
+        // 7. Test opening the Admin Dashboard window
         SwingUtilities.invokeLater(() -> {
             try {
-                System.out.println("[INFO] Instantiating AdminDashboard on Swing EDT...");
+                System.out.println("Opening AdminDashboard on Swing thread...");
                 AdminDashboard dashboard = new AdminDashboard();
 
-                assertEq(dashboard.getTitle().contains("Fyto PIMS"), true, "Dashboard window title check");
-                assertEq(dashboard.getWidth() >= 1000, true, "Dashboard width check");
+                check(dashboard.getTitle().contains("Fyto PIMS"), "Dashboard title is correct");
+                check(dashboard.getWidth() >= 1000, "Dashboard opened with proper size");
 
-                // Test global refresh and metrics recalculation
+                // Refresh data on dashboard
                 dashboard.refreshAll();
-                System.out.println("[PASS] AdminDashboard instantiated and refreshed all tabs successfully.");
+                System.out.println("[PASS] Dashboard refreshed tables without error");
 
-                // Clean up UI
+                // Close test window
                 dashboard.dispose();
 
-                System.out.println(">>> All Phase 3: Admin Module Verification Tests PASSED successfully! (100%)");
+                System.out.println("All Admin Module tests passed!");
                 System.exit(0);
+
             } catch (Exception ex) {
-                System.err.println("[FAIL] Exception during AdminDashboard UI test: " + ex.getMessage());
+                System.err.println("[FAIL] Error opening AdminDashboard: " + ex.getMessage());
                 ex.printStackTrace();
                 System.exit(1);
             }
         });
     }
 
-    private static void assertEq(boolean condition, boolean expected, String testName) {
-        if (condition == expected) {
+    private static void check(boolean condition, String testName) {
+        if (condition) {
             System.out.println("[PASS] " + testName);
         } else {
-            System.err.println("[FAIL] " + testName + " (expected: " + expected + ", got: " + condition + ")");
+            System.err.println("[FAIL] " + testName);
             System.exit(1);
         }
     }

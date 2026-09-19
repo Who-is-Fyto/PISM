@@ -3,50 +3,50 @@ package pharmacyims;
 import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.*;
 
-/**
- * Headless-safe verification test for LoginFrame UI elements and validation behavior.
- */
+// Simple test to check that the login window opens and works properly
 public class LoginFrameTest {
 
     public static void main(String[] args) {
-        System.out.println(">>> Running LoginFrame UI Component Test...");
+        System.out.println("Starting LoginFrame test...");
 
-        // Ensure FlatLaf initializes cleanly
-        boolean lafSuccess = FlatLightLaf.setup();
-        System.out.println("FlatLaf setup result: " + lafSuccess);
+        // Load FlatLaf theme
+        FlatLightLaf.setup();
 
-        // Instantiate LoginFrame on EDT
+        // Run UI tests on the Swing thread
         SwingUtilities.invokeLater(() -> {
             try {
                 LoginFrame frame = new LoginFrame();
 
+                // 1. Check window title
                 if (frame.getTitle().contains("Fyto PIMS")) {
-                    System.out.println("[PASS] Window title correctly set to: " + frame.getTitle());
+                    System.out.println("[PASS] Window title is correct: " + frame.getTitle());
                 } else {
-                    System.err.println("[FAIL] Unexpected window title: " + frame.getTitle());
+                    System.err.println("[FAIL] Title did not match: " + frame.getTitle());
                 }
 
+                // 2. Check window size
                 if (frame.getWidth() == 960 && frame.getHeight() == 580) {
-                    System.out.println("[PASS] Dimensions verified (960x580).");
+                    System.out.println("[PASS] Window size is 960x580 as expected");
                 } else {
-                    System.err.println("[FAIL] Dimensions mismatch: " + frame.getWidth() + "x" + frame.getHeight());
+                    System.err.println("[FAIL] Wrong window size: " + frame.getWidth() + "x" + frame.getHeight());
                 }
 
-                // Verify initial empty state
+                // 3. Make sure text boxes start empty
                 if (frame.getUsername().isEmpty() && frame.getPassword().isEmpty()) {
-                    System.out.println("[PASS] Input fields initialized empty.");
+                    System.out.println("[PASS] Text boxes are empty at startup");
                 }
 
-                // Test error banner display
-                frame.showErrorMessage("Unit test error message");
-                System.out.println("[PASS] Error message banner displayed successfully.");
+                // 4. Test error banner message
+                frame.showErrorMessage("Sample test error message");
+                System.out.println("[PASS] Error message banner displayed properly");
 
-                // Clean up
+                // Close test window
                 frame.dispose();
-                System.out.println(">>> All LoginFrame UI component tests PASSED successfully!");
+                System.out.println("All LoginFrame tests passed!");
                 System.exit(0);
+
             } catch (Exception ex) {
-                System.err.println("[FAIL] Exception during LoginFrame test: " + ex.getMessage());
+                System.err.println("[FAIL] Something went wrong in LoginFrame test: " + ex.getMessage());
                 ex.printStackTrace();
                 System.exit(1);
             }

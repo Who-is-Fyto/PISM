@@ -3,6 +3,7 @@ package pharmacyims;
 import com.formdev.flatlaf.FlatLightLaf;
 import pharmacyims.dao.MedicineDAO;
 import pharmacyims.dao.SaleDAO;
+import pharmacyims.dao.UserDAO;
 import pharmacyims.model.Medicine;
 import pharmacyims.model.Sale;
 import pharmacyims.model.SaleItem;
@@ -18,121 +19,116 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Headless-safe verification test for Phase 5: Business Reporting & Analytics Module.
- */
+// Tests the Reports module: sales totals, low stock alerts, expiring medicines, and CSV export
 public class ReportingModuleTest {
 
     public static void main(String[] args) {
-        System.out.println(">>> Starting Fyto PIMS Phase 5: Reporting & Analytics Verification Test...");
+        System.out.println("Starting Reports & Analytics tests...");
 
-        // 1. Initialize FlatLaf
+        // Load FlatLaf theme
         FlatLightLaf.setup();
-
-        // 2. Set active admin session
-        User adminUser = new User(1, "admin", "admin123", "Admin", "System Administrator");
-        UserSession.initialize(adminUser);
 
         SaleDAO saleDAO = new SaleDAO();
         MedicineDAO medicineDAO = new MedicineDAO();
+        UserDAO userDAO = new UserDAO();
 
-        // 3. Test Stream 1: Sales Performance Queries & Calculations
-        System.out.println("[INFO] Testing Sales Performance stream data...");
+        // Log in as test admin
+        User adminUser = userDAO.authenticate("admin", "admin123");
+        if (adminUser == null) {
+            adminUser = new User(1, "admin", "admin123", "Admin", "System Administrator");
+        }
+        UserSession.initialize(adminUser);
+
+        // 1. Test fetching sales history
         LocalDate today = LocalDate.now();
         List<Sale> allSales = saleDAO.getAllSales();
-        assertEq(!allSales.isEmpty(), true, "All sales query should return records");
-        System.out.println("[INFO] Total sales available for reporting: " + allSales.size());
+        check(!allSales.isEmpty(), "Sales history has records");
+        System.out.println("Found " + allSales.size() + " sales records in database");
 
-        List<Sale> past7DaysSales = saleDAO.getSalesByDateRange(today.minusDays(7), today);
-        assertEq(!past7DaysSales.isEmpty(), true, "Past 7 days sales should return records");
+        // Test filtering by past 7 days
+        List<Sale> past7Days = saleDAO.getSalesByDateRange(today.minusDays(7), today);
+        check(!past7Days.isEmpty(), "Found sales within the last 7 days");
 
-        BigDecimal totalRev = BigDecimal.ZERO;
-        for (Sale s : past7DaysSales) {
+        // Calculate total revenue from the 7-day sales
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+        for (Sale s : past7Days) {
             if (s.getTotalAmount() != null) {
-                totalRev = totalRev.add(s.getTotalAmount());
+                totalRevenue = totalRevenue.add(s.getTotalAmount());
             }
         }
-        assertEq(totalRev.compareTo(BigDecimal.ZERO) > 0, true, "Total revenue in 7-day window should be > $0");
-        System.out.println("[PASS] Sales stream aggregated revenue: $" + totalRev);
+        check(totalRevenue.compareTo(BigDecimal.ZERO) > 0, "Total revenue is positive ($" + totalRevenue + ")");
 
-        // Test sale line item retrieval
+        // Test getting items for a specific sale
         int testSaleId = allSales.get(0).getSaleId();
         List<SaleItem> items = saleDAO.getSaleItems(testSaleId);
-        assertEq(!items.isEmpty(), true, "Sale #" + testSaleId + " must have associated line items");
-        System.out.println("[PASS] Retrieved " + items.size() + " line items for Sale #" + testSaleId);
+        check(!items.isEmpty(), "Sale #" + testSaleId + " has line items");
 
-        // 4. Test Stream 2: Low Stock Surveillance
-        System.out.println("[INFO] Testing Low Stock Surveillance stream data...");
+        // 2. Test finding medicines running low on stock
         List<Medicine> lowStockMeds = medicineDAO.getLowStockMedicines();
-        assertEq(!lowStockMeds.isEmpty(), true, "Should identify low stock medicines from catalog");
-
+        check(!lowStockMeds.isEmpty(), "Found medicines needing restock");
         for (Medicine m : lowStockMeds) {
-            assertEq(m.getQuantityInStock() <= m.getReorderLevel(), true,
-                    m.getName() + " stock (" + m.getQuantityInStock() + ") <= reorder level (" + m.getReorderLevel() + ")");
+            check(m.getQuantityInStock() <= m.getReorderLevel(),
+                    m.getName() + " is at or below reorder level (stock: " + m.getQuantityInStock() + ", level: " + m.getReorderLevel() + ")");
         }
-        System.out.println("[PASS] Found " + lowStockMeds.size() + " low stock medicines requiring replenishment.");
+        System.out.println("Low stock count: " + lowStockMeds.size());
 
-        // 5. Test Stream 3: Expiration Date Risk
-        System.out.println("[INFO] Testing Expiration Risk stream data...");
-        List<Medicine> criticalExpiring = medicineDAO.getExpiringMedicines(30);
-        assertEq(!criticalExpiring.isEmpty(), true, "Should identify medicines expiring within 30 days");
-        System.out.println("[PASS] Found " + criticalExpiring.size() + " medicines at expiration risk (<= 30 days).");
+        // 3. Test finding medicines expiring soon (within 30 days)
+        List<Medicine> expiringMeds = medicineDAO.getExpiringMedicines(30);
+        check(!expiringMeds.isEmpty(), "Found medicines expiring within 30 days");
+        System.out.println("Expiring medicines count: " + expiringMeds.size());
 
-        // 6. Test CSV Export Mechanism
-        System.out.println("[INFO] Testing CSV Export generator...");
+        // 4. Test creating a CSV spreadsheet file
         try {
-            File tempCsv = File.createTempFile("fyto_test_report_", ".csv");
-            tempCsv.deleteOnExit();
+            File testCsv = File.createTempFile("fyto_report_", ".csv");
+            testCsv.deleteOnExit();
 
-            try (FileWriter fw = new FileWriter(tempCsv)) {
-                fw.write("Sale ID,Date,Cashier,Items Sold,Revenue\n");
-                for (Sale s : past7DaysSales) {
-                    fw.write(String.format("%d,%s,\"%s\",%d,%.2f\n",
+            try (FileWriter fw = new FileWriter(testCsv)) {
+                fw.write("Sale ID,Date,Cashier,Revenue\n");
+                for (Sale s : past7Days) {
+                    fw.write(String.format("%d,%s,\"%s\",%.2f\n",
                             s.getSaleId(),
                             s.getSaleDate() != null ? s.getSaleDate().toString() : "",
                             s.getCashierName(),
-                            1,
                             s.getTotalAmount().doubleValue()
                     ));
                 }
             }
 
-            assertEq(tempCsv.exists() && tempCsv.length() > 0, true, "CSV file successfully written and populated");
-            System.out.println("[PASS] CSV export test file generated: " + tempCsv.length() + " bytes.");
+            check(testCsv.exists() && testCsv.length() > 0, "CSV file was created and written successfully");
+            System.out.println("Test CSV file size: " + testCsv.length() + " bytes");
 
         } catch (Exception ex) {
-            System.err.println("[FAIL] CSV export test exception: " + ex.getMessage());
+            System.err.println("[FAIL] CSV export error: " + ex.getMessage());
             ex.printStackTrace();
             System.exit(1);
         }
 
-        // 7. Test UI: ReportsPanel on Swing EDT
+        // 5. Test opening ReportsPanel on the Swing UI thread
         SwingUtilities.invokeLater(() -> {
             try {
-                System.out.println("[INFO] Testing ReportsPanel UI instantiation on EDT...");
-                ReportsPanel reportsPanel = new ReportsPanel();
-                assertEq(reportsPanel.getRecordCount() > 0, true, "ReportsPanel default stream should load records");
+                System.out.println("Testing ReportsPanel UI component...");
+                ReportsPanel panel = new ReportsPanel();
+                check(panel.getRecordCount() > 0, "Reports panel loaded records into table");
 
-                DefaultTableModel model = reportsPanel.getReportTableModel();
-                assertEq(model.getColumnCount() >= 5, true, "Reports table must have multiple analytical columns");
+                DefaultTableModel model = panel.getReportTableModel();
+                check(model.getColumnCount() >= 5, "Reports table has expected columns");
 
-                System.out.println("[PASS] ReportsPanel UI constructed and validated with " + reportsPanel.getRecordCount() + " loaded rows.");
-                System.out.println(">>> All Phase 5: Reporting & Analytics Verification Tests PASSED successfully! (100%)");
+                System.out.println("All Reports tests passed!");
                 System.exit(0);
 
             } catch (Exception ex) {
-                System.err.println("[FAIL] UI test exception: " + ex.getMessage());
+                System.err.println("[FAIL] Error opening ReportsPanel: " + ex.getMessage());
                 ex.printStackTrace();
                 System.exit(1);
             }
         });
     }
 
-    private static void assertEq(boolean condition, boolean expected, String testName) {
-        if (condition == expected) {
+    private static void check(boolean condition, String testName) {
+        if (condition) {
             System.out.println("[PASS] " + testName);
         } else {
-            System.err.println("[FAIL] " + testName + " (expected: " + expected + ", got: " + condition + ")");
+            System.err.println("[FAIL] " + testName);
             System.exit(1);
         }
     }
