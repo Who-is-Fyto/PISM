@@ -14,7 +14,7 @@ The application features a modern, clean graphical user interface styled with th
 4. [Database Setup (MySQL Workbench)](#database-setup-mysql-workbench)
 5. [Configuration](#configuration)
 6. [How to Run the Application](#how-to-run-the-application)
-7. [Default User Accounts](#default-user-accounts)
+7. [Default User Accounts & Lecturer Evaluation Guide](#default-user-accounts--lecturer-evaluation-guide)
 8. [Automated Testing & Quality Verification](#automated-testing--quality-verification)
 9. [Resources Used](#resources-used)
 
@@ -181,14 +181,68 @@ java -jar dist/pharmacyIMS.jar
 
 ---
 
-## Default User Accounts
+## Default User Accounts & Lecturer Evaluation Guide
 
-When launching the application, you can log in with either of the following seeded accounts:
+> **Note on Login Screen Design**:
+> Demo login hints were intentionally removed from the graphical login window to reflect real-world pharmacy workstation security practices. All pre-configured test credentials for lecturer marking and functional evaluation are provided below.
 
-| Username | Password | Assigned Role | Accessible Dashboards |
+### Pre-Configured Test Credentials
+
+| Username | Password | Role | Features / Workspaces Accessible |
 | :--- | :--- | :--- | :--- |
-| `admin` | `admin123` | **ADMIN** | Medicine Catalog, Suppliers, Cashier Staff Management, Financial Reports |
-| `cashier1` | `cashier123` | **CASHIER** | Cashier POS, Medicine Stock Lookup, Dispensing Cart, Thermal Receipt Printing |
+| `admin` | `admin123` | **ADMIN** | Medicine Catalog, Suppliers Directory, Cashier Account Management, Business Intelligence & Financial Reports |
+| `cashier1` | `cashier123` | **CASHIER** | Cashier POS Terminal, Live Medicine Stock Lookup, Dispensing Cart, Thermal Receipt Printing |
+
+---
+
+### Step-by-Step Evaluation Walkthrough for Lecturers
+
+To make grading and functional testing as quick and straightforward as possible, here is a suggested testing route:
+
+#### 1. Testing Administrator Workflows (`admin` / `admin123`)
+1. **Login & Redirection**: Sign in using `admin` / `admin123`. The system authenticates the session and automatically opens the **Master Administrator Dashboard**.
+2. **Medicine Inventory**:
+   - Filter drugs by dosage form (e.g., *Tablets*, *Capsules*, *Syrup*).
+   - Search by generic or brand name using the search bar.
+   - Click **"+ Add Medicine"** to add a new pharmaceutical product linked to a supplier.
+   - Click **"Edit Selected"** to update prices or restock levels.
+   - Notice the automatic color-coded stock badges: green for *In Stock*, amber for *Low Stock*, and rose for *Out of Stock*.
+3. **Supplier Directory**:
+   - Switch to the **Suppliers** tab in the left sidebar.
+   - Add or edit distributor records (company name, contact person, phone number, email, address).
+4. **Staff Management**:
+   - Switch to the **Cashiers** tab in the left sidebar.
+   - Click **"+ Register Cashier"** to create a new user account with the Cashier role.
+   - Test password reset or removing a cashier account (the system protects the master `admin` account from accidental deletion).
+5. **Business Intelligence & Reporting**:
+   - Switch to the **Reports & Analytics** tab.
+   - Click between the **Sales Revenue**, **Low Stock Warnings**, and **Expiring Soon (30 Days)** views.
+   - Test date filters (*Today*, *Past 7 Days*, *This Month*, or *Custom Date Range*).
+   - Click **"📥 Export to CSV"** to generate an RFC 4180-compliant spreadsheet of the active report.
+6. **Direct POS Access**:
+   - Administrators can also test dispensing without logging out by clicking **"Open POS Terminal"** at the bottom of the sidebar.
+
+#### 2. Testing Cashier Point-of-Sale (POS) Workflows (`cashier1` / `cashier123`)
+1. **Login & Redirection**: Sign in using `cashier1` / `cashier123`. The application opens directly into the **Cashier Terminal** (restricting access to admin features).
+2. **Live Medicine Lookup**:
+   - Press `F1` or click the search box to filter medicines by name or manufacturer.
+   - Selecting a medicine displays its unit price, category, expiry date, and current stock.
+3. **Quantity Selection & Inventory Guard**:
+   - Set the quantity using the `+` / `−` buttons or type directly in the spinner.
+   - Try setting a quantity higher than the available stock to verify that the application prevents selling beyond current inventory.
+   - Click **"+ Add to Cart"** (or press `F2`).
+4. **Dispensing Cart**:
+   - Add multiple items to the cart. Line numbers, subtotals, and total bill amounts update automatically.
+   - Test selecting an item and clicking **"Remove Item"** (or `Del`), or **"Clear Cart"**.
+5. **Atomic Checkout & Thermal Receipt**:
+   - In the checkout summary panel, enter an amount in the **Amount Paid** box (e.g., `$50.00`). The green **Change Due** label updates automatically.
+   - Click **"✔ Complete Sale & Print Bill"** (or press `F5`).
+   - A modal window displays a formatted 58mm/80mm style thermal receipt with invoice number, date, cashier name, line items, and change breakdown.
+   - Click **"Close"** and observe that the medicine's stock quantity has decremented both on the screen and in the database.
+
+#### 3. Testing Input Validation & System Resilience
+- **Input Validation**: Try submitting the login form with blank fields or incorrect passwords to test the red inline warning banner and red border outlines.
+- **Offline / Disconnected Fallback**: If MySQL is not running or credentials fail, the application gracefully switches to an in-memory mock repository populated with sample pharmaceutical data, allowing full testing of all features without crashing.
 
 ---
 

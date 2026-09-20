@@ -265,7 +265,7 @@ public class LoginFrame extends JFrame {
         txtUsername.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         txtUsername.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
         txtUsername.setPreferredSize(new Dimension(360, 42));
-        txtUsername.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "e.g. admin or cashier1");
+        txtUsername.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter your username");
         txtUsername.putClientProperty(FlatClientProperties.STYLE, "arc: 10; margin: 0, 12, 0, 12;");
         txtUsername.putClientProperty(FlatClientProperties.TEXT_FIELD_SHOW_CLEAR_BUTTON, true);
         txtUsername.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -362,22 +362,6 @@ public class LoginFrame extends JFrame {
         centerContainer.add(btnExit);
 
         centerContainer.add(Box.createVerticalGlue());
-
-        // Quick demo credentials hint card: serene ice-blue tint
-        JPanel demoCard = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 7));
-        demoCard.setBackground(new Color(240, 249, 255)); // Serene ice blue
-        demoCard.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(186, 230, 253), 1, true),
-                new EmptyBorder(4, 12, 4, 12)
-        ));
-        demoCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
-        demoCard.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        JLabel lblDemo = new JLabel("Demo Logins: admin / admin123 (Admin) • cashier1 / cashier123 (POS)");
-        lblDemo.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        lblDemo.setForeground(new Color(3, 105, 161)); // Serene deep cerulean
-        demoCard.add(lblDemo);
-        centerContainer.add(demoCard);
 
         formPanel.add(centerContainer, BorderLayout.CENTER);
         return formPanel;
