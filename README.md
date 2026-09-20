@@ -1,5 +1,16 @@
 # Fyto PIMS — Pharmacy Inventory Management System
 
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Who-is-Fyto/PISM)
+
+<p align="left">
+  <a href="https://github.com/Who-is-Fyto/PISM">
+    <img src="https://github.githubassets.com/favicons/favicon.svg" width="20" height="20" alt="GitHub" align="absmiddle" />
+    <strong>GitHub Repository:</strong> https://github.com/Who-is-Fyto/PISM
+  </a>
+  &nbsp;&bull;&nbsp;
+  <code>git clone https://github.com/Who-is-Fyto/PISM.git</code>
+</p>
+
 **Fyto PIMS** is a multi-user Java Swing desktop application designed for modern retail and community pharmacies. It provides end-to-end management of pharmaceutical inventory, fast point-of-sale (POS) dispensing, supplier directories, cashier accountability, and real-time business intelligence reports with thermal receipt printing and CSV data export.
 
 The application features a modern, clean graphical user interface styled with the **FlatLaf** Look and Feel, coupled with a resilient Model-View-Controller (MVC) and Data Access Object (DAO) architecture that seamlessly integrates with a **MySQL** relational database or gracefully falls back to an in-memory mock cache when offline.
