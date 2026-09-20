@@ -13,10 +13,10 @@ public class MetricCard extends JPanel {
     private final JLabel lblSubtitle;
 
     public enum CardTheme {
-        PRIMARY(new Color(2, 132, 199), new Color(240, 249, 255)),
-        SUCCESS(new Color(16, 185, 129), new Color(236, 253, 245)),
-        WARNING(new Color(245, 158, 11), new Color(255, 251, 235)),
-        DANGER(new Color(239, 68, 68), new Color(254, 242, 242));
+        PRIMARY(new Color(2, 132, 199), new Color(240, 249, 255)),  // Serene Sky
+        SUCCESS(new Color(5, 150, 105), new Color(236, 253, 245)),  // Botanical Healing Green
+        WARNING(new Color(217, 119, 6), new Color(255, 251, 235)),  // Calm Ochre
+        DANGER(new Color(225, 29, 72), new Color(255, 241, 242));   // Muted Rose
 
         final Color accentColor;
         final Color backgroundColor;
@@ -40,30 +40,30 @@ public class MetricCard extends JPanel {
         topRow.setOpaque(false);
 
         JLabel lblTitle = new JLabel(title);
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 11));
         lblTitle.setForeground(new Color(100, 116, 139));
         topRow.add(lblTitle, BorderLayout.WEST);
 
-        // Accent indicator bar/pill
-        JPanel accentBar = new JPanel();
-        accentBar.setPreferredSize(new Dimension(8, 8));
-        accentBar.setBackground(theme.accentColor);
-        accentBar.putClientProperty(FlatClientProperties.STYLE, "arc: 999;");
-        topRow.add(accentBar, BorderLayout.EAST);
+        // Serene pill indicator
+        JPanel accentPill = new JPanel();
+        accentPill.setPreferredSize(new Dimension(10, 10));
+        accentPill.setBackground(theme.accentColor);
+        accentPill.putClientProperty(FlatClientProperties.STYLE, "arc: 999;");
+        topRow.add(accentPill, BorderLayout.EAST);
 
         add(topRow, BorderLayout.NORTH);
 
-        // Center: Big Bold Metric
+        // Center: Bold Metric Value
         lblValue = new JLabel(initialValue);
         lblValue.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblValue.setForeground(new Color(15, 23, 42)); // #0F172A
+        lblValue.setForeground(new Color(15, 23, 42)); // Deep charcoal
         lblValue.setBorder(new EmptyBorder(8, 0, 4, 0));
         add(lblValue, BorderLayout.CENTER);
 
-        // Bottom: Subtitle / Context
+        // Bottom: Subtitle
         lblSubtitle = new JLabel(subtitle);
-        lblSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        lblSubtitle.setForeground(theme.accentColor);
+        lblSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblSubtitle.setForeground(new Color(100, 116, 139));
         add(lblSubtitle, BorderLayout.SOUTH);
     }
 

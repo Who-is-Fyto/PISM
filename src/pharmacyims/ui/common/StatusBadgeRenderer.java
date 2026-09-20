@@ -31,19 +31,35 @@ public class StatusBadgeRenderer extends DefaultTableCellRenderer {
         String text = value != null ? value.toString().trim() : "";
         badgeLabel.setText(text);
 
-        // Status color styling
+        // Status color styling: healing greens, calm ambers, muted roses, and crisp neutrals
         if (text.equalsIgnoreCase("In Stock") || text.equalsIgnoreCase("Active") || text.equalsIgnoreCase("Good")) {
-            badgeLabel.setBackground(new Color(220, 252, 231));
-            badgeLabel.setForeground(new Color(21, 128, 61));
+            badgeLabel.setBackground(new Color(236, 253, 245)); // Healing mint wash
+            badgeLabel.setForeground(new Color(4, 120, 87));    // Botanical green
+            badgeLabel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(167, 243, 208), 1, true),
+                    new EmptyBorder(2, 9, 2, 9)
+            ));
         } else if (text.equalsIgnoreCase("Low Stock") || text.equalsIgnoreCase("Warning")) {
-            badgeLabel.setBackground(new Color(254, 243, 199));
-            badgeLabel.setForeground(new Color(180, 83, 9));
+            badgeLabel.setBackground(new Color(254, 243, 199)); // Calm honey wash
+            badgeLabel.setForeground(new Color(180, 83, 9));    // Soft ochre
+            badgeLabel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(253, 230, 138), 1, true),
+                    new EmptyBorder(2, 9, 2, 9)
+            ));
         } else if (text.equalsIgnoreCase("Out of Stock") || text.equalsIgnoreCase("Critical") || text.equalsIgnoreCase("Expired")) {
-            badgeLabel.setBackground(new Color(254, 226, 226));
-            badgeLabel.setForeground(new Color(185, 28, 28));
+            badgeLabel.setBackground(new Color(255, 241, 242)); // Soft rose wash
+            badgeLabel.setForeground(new Color(225, 29, 72));   // Muted crimson
+            badgeLabel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(254, 205, 211), 1, true),
+                    new EmptyBorder(2, 9, 2, 9)
+            ));
         } else {
             badgeLabel.setBackground(new Color(241, 245, 249));
             badgeLabel.setForeground(new Color(71, 85, 105));
+            badgeLabel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(226, 232, 240), 1, true),
+                    new EmptyBorder(2, 9, 2, 9)
+            ));
         }
 
         if (isSelected) {

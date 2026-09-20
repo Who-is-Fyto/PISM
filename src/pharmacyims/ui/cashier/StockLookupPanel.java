@@ -216,7 +216,6 @@ public class StockLookupPanel extends JPanel {
         JButton btnMinus = new JButton("−");
         btnMinus.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnMinus.setPreferredSize(new Dimension(34, 34));
-        btnMinus.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btnMinus.addActionListener(e -> {
             int cur = (int) spinQuantity.getValue();
             if (cur > 1) spinQuantity.setValue(cur - 1);
@@ -233,7 +232,6 @@ public class StockLookupPanel extends JPanel {
         JButton btnPlus = new JButton("+");
         btnPlus.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnPlus.setPreferredSize(new Dimension(34, 34));
-        btnPlus.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btnPlus.addActionListener(e -> {
             int cur = (int) spinQuantity.getValue();
             if (selectedMedicine != null && cur < selectedMedicine.getQuantityInStock()) {
@@ -246,11 +244,11 @@ public class StockLookupPanel extends JPanel {
 
         // Add to Cart Button
         btnAddToCart = new JButton("+ Add to Cart (F2)");
-        btnAddToCart.setBackground(new Color(13, 148, 136)); // Medical Teal
+        btnAddToCart.setBackground(new Color(5, 150, 105)); // Botanical healing green
         btnAddToCart.setForeground(Color.WHITE);
         btnAddToCart.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnAddToCart.setPreferredSize(new Dimension(170, 36));
-        btnAddToCart.putClientProperty(FlatClientProperties.STYLE, "arc: 8; hoverBackground: #0F766E;");
+        btnAddToCart.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #047857;");
         btnAddToCart.setEnabled(false);
         btnAddToCart.addActionListener(e -> handleAddToCartAction());
         row.add(btnAddToCart, BorderLayout.EAST);
@@ -296,25 +294,41 @@ public class StockLookupPanel extends JPanel {
         lblStockBadge.setVisible(true);
         if (stock <= 0) {
             lblStockBadge.setText("Out of Stock");
-            lblStockBadge.setBackground(new Color(254, 226, 226));
-            lblStockBadge.setForeground(new Color(185, 28, 28));
+            lblStockBadge.setBackground(new Color(255, 241, 242)); // Soft rose wash
+            lblStockBadge.setForeground(new Color(225, 29, 72));
+            lblStockBadge.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(254, 205, 211), 1, true),
+                    new EmptyBorder(2, 8, 2, 8)
+            ));
             btnAddToCart.setEnabled(false);
         } else if (expired) {
             lblStockBadge.setText("Expired");
-            lblStockBadge.setBackground(new Color(254, 226, 226));
-            lblStockBadge.setForeground(new Color(185, 28, 28));
+            lblStockBadge.setBackground(new Color(255, 241, 242)); // Soft rose wash
+            lblStockBadge.setForeground(new Color(225, 29, 72));
+            lblStockBadge.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(254, 205, 211), 1, true),
+                    new EmptyBorder(2, 8, 2, 8)
+            ));
             btnAddToCart.setEnabled(false);
         } else if (stock <= selectedMedicine.getReorderLevel()) {
             lblStockBadge.setText("Low Stock (" + stock + ")");
-            lblStockBadge.setBackground(new Color(254, 243, 199));
+            lblStockBadge.setBackground(new Color(254, 243, 199)); // Calm honey wash
             lblStockBadge.setForeground(new Color(180, 83, 9));
+            lblStockBadge.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(253, 230, 138), 1, true),
+                    new EmptyBorder(2, 8, 2, 8)
+            ));
             btnAddToCart.setEnabled(true);
             spinModel.setMaximum(stock);
             spinQuantity.setValue(1);
         } else {
             lblStockBadge.setText("In Stock (" + stock + ")");
-            lblStockBadge.setBackground(new Color(220, 252, 231));
-            lblStockBadge.setForeground(new Color(21, 128, 61));
+            lblStockBadge.setBackground(new Color(236, 253, 245)); // Healing mint wash
+            lblStockBadge.setForeground(new Color(4, 120, 87));
+            lblStockBadge.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(167, 243, 208), 1, true),
+                    new EmptyBorder(2, 8, 2, 8)
+            ));
             btnAddToCart.setEnabled(true);
             spinModel.setMaximum(stock);
             spinQuantity.setValue(1);

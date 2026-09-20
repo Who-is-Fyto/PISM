@@ -195,9 +195,13 @@ public class AdminDashboard extends JFrame {
         btnOpenPOS.setHorizontalAlignment(SwingConstants.LEFT);
         btnOpenPOS.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
         btnOpenPOS.setPreferredSize(new Dimension(196, 38));
-        btnOpenPOS.setBackground(new Color(240, 253, 250));
-        btnOpenPOS.setForeground(new Color(13, 148, 136));
-        btnOpenPOS.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
+        btnOpenPOS.setBackground(new Color(240, 249, 255)); // Serene ice blue
+        btnOpenPOS.setForeground(new Color(2, 132, 199));   // Serene cerulean
+        btnOpenPOS.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(186, 230, 253), 1, true),
+                new EmptyBorder(6, 12, 6, 12)
+        ));
+        btnOpenPOS.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #E0F2FE;");
         btnOpenPOS.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnOpenPOS.addActionListener(e -> {
             CashierDashboard pos = new CashierDashboard();
@@ -217,9 +221,9 @@ public class AdminDashboard extends JFrame {
         infoBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         infoBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel lblVer = new JLabel("Fyto PIMS v1.0 Enterprise");
+        JLabel lblVer = new JLabel("● Workstation Active");
         lblVer.setFont(new Font("Segoe UI", Font.BOLD, 11));
-        lblVer.setForeground(new Color(71, 85, 105));
+        lblVer.setForeground(new Color(5, 150, 105)); // Healing green
 
         JLabel lblRole = new JLabel("Role: Administrator");
         lblRole.setFont(new Font("Segoe UI", Font.PLAIN, 11));
@@ -240,7 +244,6 @@ public class AdminDashboard extends JFrame {
         btn.setPreferredSize(new Dimension(196, 40));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.setFocusPainted(false);
-        btn.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btn.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         updateNavButtonStyle(btn, active);
@@ -259,18 +262,18 @@ public class AdminDashboard extends JFrame {
 
     private void updateNavButtonStyle(JButton btn, boolean active) {
         if (active) {
-            btn.setBackground(new Color(236, 253, 245)); // Emerald tint (#ECFDF5)
-            btn.setForeground(new Color(13, 148, 136));  // Medical Teal (#0D9488)
+            btn.setBackground(new Color(236, 253, 245)); // Healing mint wash (#ECFDF5)
+            btn.setForeground(new Color(4, 120, 87));     // Botanical healing green (#047857)
             btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
             btn.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(new Color(167, 243, 208), 1, true),
-                    new EmptyBorder(6, 12, 6, 12)
+                    BorderFactory.createMatteBorder(0, 3, 0, 0, new Color(5, 150, 105)),
+                    new EmptyBorder(6, 11, 6, 12)
             ));
         } else {
             btn.setBackground(Color.WHITE);
             btn.setForeground(new Color(71, 85, 105));
             btn.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btn.setBorder(new EmptyBorder(6, 12, 6, 12));
+            btn.setBorder(new EmptyBorder(6, 14, 6, 12));
         }
     }
 
@@ -312,26 +315,26 @@ public class AdminDashboard extends JFrame {
         rightActions.setOpaque(false);
 
         JButton btnAddMed = new JButton("+ Add Medicine");
-        btnAddMed.setBackground(new Color(13, 148, 136));
+        btnAddMed.setBackground(new Color(5, 150, 105)); // Botanical healing green
         btnAddMed.setForeground(Color.WHITE);
         btnAddMed.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        btnAddMed.putClientProperty(FlatClientProperties.STYLE, "arc: 8; hoverBackground: #0F766E;");
+        btnAddMed.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #047857;");
         btnAddMed.addActionListener(e -> handleAddMedicine());
         rightActions.add(btnAddMed);
 
         JButton btnEditMed = new JButton("Edit Selected");
-        btnEditMed.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
+        btnEditMed.setForeground(new Color(2, 132, 199)); // Serene sky blue
+        btnEditMed.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #F0F9FF;");
         btnEditMed.addActionListener(e -> handleEditMedicine());
         rightActions.add(btnEditMed);
 
         JButton btnDeleteMed = new JButton("Delete");
-        btnDeleteMed.setForeground(new Color(220, 38, 38));
-        btnDeleteMed.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
+        btnDeleteMed.setForeground(new Color(225, 29, 72)); // Muted rose
+        btnDeleteMed.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #FFF1F2;");
         btnDeleteMed.addActionListener(e -> handleDeleteMedicine());
         rightActions.add(btnDeleteMed);
 
         JButton btnRefreshMed = new JButton("Refresh");
-        btnRefreshMed.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btnRefreshMed.addActionListener(e -> {
             reloadMedicines();
             refreshMetrics();
@@ -561,26 +564,26 @@ public class AdminDashboard extends JFrame {
         rightActions.setOpaque(false);
 
         JButton btnAddSup = new JButton("+ Add Supplier");
-        btnAddSup.setBackground(new Color(13, 148, 136));
+        btnAddSup.setBackground(new Color(5, 150, 105)); // Botanical healing green
         btnAddSup.setForeground(Color.WHITE);
         btnAddSup.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        btnAddSup.putClientProperty(FlatClientProperties.STYLE, "arc: 8; hoverBackground: #0F766E;");
+        btnAddSup.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #047857;");
         btnAddSup.addActionListener(e -> handleAddSupplier());
         rightActions.add(btnAddSup);
 
         JButton btnEditSup = new JButton("Edit Selected");
-        btnEditSup.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
+        btnEditSup.setForeground(new Color(2, 132, 199)); // Serene sky blue
+        btnEditSup.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #F0F9FF;");
         btnEditSup.addActionListener(e -> handleEditSupplier());
         rightActions.add(btnEditSup);
 
         JButton btnDeleteSup = new JButton("Delete");
-        btnDeleteSup.setForeground(new Color(220, 38, 38));
-        btnDeleteSup.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
+        btnDeleteSup.setForeground(new Color(225, 29, 72)); // Muted rose
+        btnDeleteSup.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #FFF1F2;");
         btnDeleteSup.addActionListener(e -> handleDeleteSupplier());
         rightActions.add(btnDeleteSup);
 
         JButton btnRefreshSup = new JButton("Refresh");
-        btnRefreshSup.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btnRefreshSup.addActionListener(e -> {
             reloadSuppliers();
             refreshMetrics();
@@ -761,26 +764,26 @@ public class AdminDashboard extends JFrame {
         rightActions.setOpaque(false);
 
         JButton btnAddCashier = new JButton("+ Register Cashier");
-        btnAddCashier.setBackground(new Color(13, 148, 136));
+        btnAddCashier.setBackground(new Color(5, 150, 105)); // Botanical healing green
         btnAddCashier.setForeground(Color.WHITE);
         btnAddCashier.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        btnAddCashier.putClientProperty(FlatClientProperties.STYLE, "arc: 8; hoverBackground: #0F766E;");
+        btnAddCashier.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #047857;");
         btnAddCashier.addActionListener(e -> handleAddCashier());
         rightActions.add(btnAddCashier);
 
         JButton btnResetPass = new JButton("Reset Password");
-        btnResetPass.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
+        btnResetPass.setForeground(new Color(2, 132, 199)); // Serene sky blue
+        btnResetPass.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #F0F9FF;");
         btnResetPass.addActionListener(e -> handleResetPassword());
         rightActions.add(btnResetPass);
 
         JButton btnDeleteUser = new JButton("Remove Account");
-        btnDeleteUser.setForeground(new Color(220, 38, 38));
-        btnDeleteUser.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
+        btnDeleteUser.setForeground(new Color(225, 29, 72)); // Muted rose
+        btnDeleteUser.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #FFF1F2;");
         btnDeleteUser.addActionListener(e -> handleDeleteUser());
         rightActions.add(btnDeleteUser);
 
         JButton btnRefreshUsers = new JButton("Refresh");
-        btnRefreshUsers.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btnRefreshUsers.addActionListener(e -> reloadUsers());
         rightActions.add(btnRefreshUsers);
 

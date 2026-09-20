@@ -155,7 +155,6 @@ public class ReportsPanel extends JPanel {
         btn.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         btn.setPreferredSize(new Dimension(245, 36));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btn.addActionListener(e -> {
             activeStream = stream;
             updateStreamButtonStyles();
@@ -173,15 +172,23 @@ public class ReportsPanel extends JPanel {
 
     private void applyButtonStyle(JButton btn, boolean active) {
         if (active) {
-            btn.setBackground(new Color(13, 148, 136)); // Medical Teal
+            btn.setBackground(new Color(5, 150, 105)); // Botanical healing green
             btn.setForeground(Color.WHITE);
             btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
-            btn.putClientProperty(FlatClientProperties.STYLE, "arc: 8; hoverBackground: #0F766E;");
+            btn.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(4, 120, 87), 1, true),
+                    new EmptyBorder(6, 12, 6, 12)
+            ));
+            btn.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #047857;");
         } else {
-            btn.setBackground(new Color(241, 245, 249)); // Soft slate
-            btn.setForeground(new Color(51, 65, 85));
+            btn.setBackground(new Color(248, 250, 252)); // Crisp neutral
+            btn.setForeground(new Color(71, 85, 105));
             btn.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            btn.putClientProperty(FlatClientProperties.STYLE, "arc: 8; hoverBackground: #E2E8F0;");
+            btn.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(226, 232, 240), 1, true),
+                    new EmptyBorder(6, 12, 6, 12)
+            ));
+            btn.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #E2E8F0;");
         }
     }
 
@@ -272,7 +279,6 @@ public class ReportsPanel extends JPanel {
             leftFilters.add(txtEndDate);
 
             JButton btnApply = new JButton("Apply Range");
-            btnApply.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
             btnApply.addActionListener(e -> loadSalesDataFromCustomRange());
             leftFilters.add(btnApply);
 
@@ -307,17 +313,21 @@ public class ReportsPanel extends JPanel {
 
         JButton btnExportCSV = new JButton("📥  Export to CSV");
         btnExportCSV.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        btnExportCSV.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
+        btnExportCSV.setBackground(new Color(240, 249, 255)); // Serene ice blue
+        btnExportCSV.setForeground(new Color(2, 132, 199));   // Serene cerulean
+        btnExportCSV.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(186, 230, 253), 1, true),
+                new EmptyBorder(6, 12, 6, 12)
+        ));
+        btnExportCSV.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #E0F2FE;");
         btnExportCSV.addActionListener(e -> handleExportCSV());
         rightActions.add(btnExportCSV);
 
         JButton btnPrint = new JButton("🖨  Print Report");
-        btnPrint.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btnPrint.addActionListener(e -> handlePrintReport());
         rightActions.add(btnPrint);
 
         JButton btnRefresh = new JButton("🔄  Refresh");
-        btnRefresh.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btnRefresh.addActionListener(e -> loadCurrentStream());
         rightActions.add(btnRefresh);
 
@@ -330,7 +340,6 @@ public class ReportsPanel extends JPanel {
     private JButton createPresetButton(String text, Runnable action) {
         JButton btn = new JButton(text);
         btn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        btn.putClientProperty(FlatClientProperties.STYLE, "arc: 6;");
         btn.addActionListener(e -> action.run());
         return btn;
     }
@@ -683,7 +692,6 @@ public class ReportsPanel extends JPanel {
         panel.add(scroll, BorderLayout.CENTER);
 
         JButton btnClose = new JButton("Close");
-        btnClose.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btnClose.addActionListener(e -> dialog.dispose());
         JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         btnRow.setOpaque(false);

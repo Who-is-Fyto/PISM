@@ -105,15 +105,14 @@ public class UserFormDialog extends JDialog {
         btnRow.setOpaque(false);
 
         JButton btnCancel = new JButton("Cancel");
-        btnCancel.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btnCancel.addActionListener(e -> dispose());
         btnRow.add(btnCancel);
 
         JButton btnSave = new JButton("Create Cashier Account");
-        btnSave.setBackground(new Color(13, 148, 136));
+        btnSave.setBackground(new Color(5, 150, 105)); // Botanical healing green
         btnSave.setForeground(Color.WHITE);
         btnSave.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btnSave.putClientProperty(FlatClientProperties.STYLE, "arc: 8; hoverBackground: #0F766E;");
+        btnSave.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #047857;");
         btnSave.addActionListener(e -> handleSave());
         btnRow.add(btnSave);
 

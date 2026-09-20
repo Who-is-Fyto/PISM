@@ -51,7 +51,7 @@ public class LoginFrame extends JFrame {
         getRootPane().setDefaultButton(btnSignIn);
     }
 
-    // Creates the left branding hero panel with custom gradient and emblem
+    // Creates the left branding hero panel with serene blues, healing greens, and clinical branding
     private JPanel createHeroPanel() {
         JPanel heroPanel = new JPanel() {
             @Override
@@ -60,116 +60,111 @@ public class LoginFrame extends JFrame {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                // Background gradient
-                Color c1 = new Color(6, 78, 59);
-                Color c2 = new Color(13, 148, 136);
-                Color c3 = new Color(2, 132, 199);
+                // Serene deep ocean-slate to botanical spruce gradient
+                Color c1 = new Color(15, 29, 48);   // Serene midnight slate
+                Color c2 = new Color(13, 64, 69);   // Deep healing spruce
+                Color c3 = new Color(16, 88, 77);   // Botanical eucalyptus
 
                 LinearGradientPaint gradient = new LinearGradientPaint(
                         0, 0, getWidth(), getHeight(),
-                        new float[]{0.0f, 0.65f, 1.0f},
+                        new float[]{0.0f, 0.55f, 1.0f},
                         new Color[]{c1, c2, c3}
                 );
                 g2.setPaint(gradient);
                 g2.fillRect(0, 0, getWidth(), getHeight());
 
-                // Decorative background circles
-                g2.setColor(new Color(255, 255, 255, 12));
-                g2.fillOval(-60, -60, 240, 240);
-                g2.fillOval(getWidth() - 140, getHeight() - 160, 220, 220);
+                // Subtle serene ambient glow
+                g2.setPaint(new RadialGradientPaint(
+                        getWidth() * 0.85f, getHeight() * 0.2f, 260,
+                        new float[]{0.0f, 1.0f},
+                        new Color[]{new Color(56, 189, 248, 25), new Color(56, 189, 248, 0)}
+                ));
+                g2.fillRect(0, 0, getWidth(), getHeight());
 
                 g2.dispose();
             }
         };
 
         heroPanel.setLayout(new BorderLayout());
-        heroPanel.setBorder(new EmptyBorder(45, 45, 40, 45));
+        heroPanel.setBorder(new EmptyBorder(42, 42, 38, 42));
 
         // Top / Center content in hero
         JPanel contentPanel = new JPanel();
         contentPanel.setOpaque(false);
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
-        // Medical Cross Emblem Component
-        JComponent crossBadge = new JComponent() {
+        // Refined Botanical & Clinical Emblem
+        JComponent brandEmblem = new JComponent() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-                g2.setColor(new Color(16, 185, 129));
-                g2.fillRoundRect(0, 0, 56, 56, 16, 16);
+                // Healing green rounded badge
+                g2.setColor(new Color(5, 150, 105));
+                g2.fillRoundRect(0, 0, 54, 54, 14, 14);
 
+                // Subtle inner border
+                g2.setColor(new Color(110, 231, 183, 100));
+                g2.setStroke(new BasicStroke(1.5f));
+                g2.drawRoundRect(1, 1, 52, 52, 13, 13);
+
+                // Crisp clinical cross in white
                 g2.setColor(Color.WHITE);
-                g2.fillRoundRect(22, 12, 12, 32, 4, 4);
-                g2.fillRoundRect(12, 22, 32, 12, 4, 4);
+                g2.fillRoundRect(22, 13, 10, 28, 3, 3);
+                g2.fillRoundRect(13, 22, 28, 10, 3, 3);
+
+                // Serene sky blue accent dot
+                g2.setColor(new Color(56, 189, 248));
+                g2.fillOval(35, 11, 7, 7);
 
                 g2.dispose();
             }
 
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(56, 56);
+                return new Dimension(54, 54);
             }
 
             @Override
             public Dimension getMaximumSize() {
-                return new Dimension(56, 56);
+                return new Dimension(54, 54);
             }
         };
-        crossBadge.setAlignmentX(Component.LEFT_ALIGNMENT);
-        contentPanel.add(crossBadge);
-        contentPanel.add(Box.createVerticalStrut(22));
+        brandEmblem.setAlignmentX(Component.LEFT_ALIGNMENT);
+        contentPanel.add(brandEmblem);
+        contentPanel.add(Box.createVerticalStrut(20));
 
         JLabel lblTitle = new JLabel("Fyto PIMS");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 30));
         lblTitle.setForeground(Color.WHITE);
         lblTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentPanel.add(lblTitle);
 
-        contentPanel.add(Box.createVerticalStrut(6));
+        contentPanel.add(Box.createVerticalStrut(4));
 
-        JLabel lblSubtitle = new JLabel("Pharmacy Inventory & Dispensing Suite");
-        lblSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-        lblSubtitle.setForeground(new Color(209, 250, 229));
+        JLabel lblSubtitle = new JLabel("Botanical Care & Clinical Pharmacy Suite");
+        lblSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblSubtitle.setForeground(new Color(186, 230, 253)); // Serene sky ice
         lblSubtitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentPanel.add(lblSubtitle);
 
-        contentPanel.add(Box.createVerticalStrut(28));
+        contentPanel.add(Box.createVerticalStrut(24));
 
         JSeparator sep = new JSeparator();
         sep.setMaximumSize(new Dimension(320, 2));
-        sep.setForeground(new Color(255, 255, 255, 60));
+        sep.setForeground(new Color(255, 255, 255, 45));
         sep.setAlignmentX(Component.LEFT_ALIGNMENT);
         contentPanel.add(sep);
 
-        contentPanel.add(Box.createVerticalStrut(24));
+        contentPanel.add(Box.createVerticalStrut(20));
 
-        String[] features = {
-                "Intelligent Stock & Reorder Tracking",
-                "Rapid Point-of-Sale Dispensing",
-                "Automated Expiration Surveillance",
-                "Multi-User Role-Based Security"
-        };
-
-        for (String feature : features) {
-            JPanel bulletItem = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 4));
-            bulletItem.setOpaque(false);
-            bulletItem.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-            JLabel checkIcon = new JLabel("✓ ");
-            checkIcon.setFont(new Font("Segoe UI", Font.BOLD, 14));
-            checkIcon.setForeground(new Color(52, 211, 153));
-
-            JLabel textLabel = new JLabel(feature);
-            textLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            textLabel.setForeground(new Color(240, 253, 250));
-
-            bulletItem.add(checkIcon);
-            bulletItem.add(textLabel);
-            contentPanel.add(bulletItem);
-            contentPanel.add(Box.createVerticalStrut(4));
-        }
+        // Bespoke feature cards
+        contentPanel.add(createFeatureCard("🌿", "Smart Inventory Control", "Real-time reorder thresholds & batch tracking"));
+        contentPanel.add(Box.createVerticalStrut(10));
+        contentPanel.add(createFeatureCard("⚡", "Rapid Dispensing POS", "Barcode stock lookup, cart & thermal billing"));
+        contentPanel.add(Box.createVerticalStrut(10));
+        contentPanel.add(createFeatureCard("🛡", "Clinical Safeguards", "30-day expiration alerts & role permissions"));
 
         heroPanel.add(contentPanel, BorderLayout.CENTER);
 
@@ -178,10 +173,10 @@ public class LoginFrame extends JFrame {
         bottomHero.setOpaque(false);
 
         JLabel dotLabel = new JLabel("●");
-        dotLabel.setForeground(new Color(52, 211, 153));
-        dotLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        dotLabel.setForeground(new Color(52, 211, 153)); // Healing mint
+        dotLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
-        lblStatusBadge = new JLabel("System Online • v1.0.0");
+        lblStatusBadge = new JLabel("System Online • Workstation Ready");
         lblStatusBadge.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         lblStatusBadge.setForeground(new Color(204, 251, 241));
 
@@ -190,6 +185,39 @@ public class LoginFrame extends JFrame {
         heroPanel.add(bottomHero, BorderLayout.SOUTH);
 
         return heroPanel;
+    }
+
+    // Creates a sleek translucent feature card for the left hero panel
+    private JPanel createFeatureCard(String icon, String title, String desc) {
+        JPanel card = new JPanel(new BorderLayout(10, 2));
+        card.setOpaque(false);
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(255, 255, 255, 25), 1, true),
+                new EmptyBorder(8, 12, 8, 12)
+        ));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 46));
+        card.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel lblIcon = new JLabel(icon);
+        lblIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 14));
+        card.add(lblIcon, BorderLayout.WEST);
+
+        JPanel textStack = new JPanel(new GridLayout(2, 1, 0, 1));
+        textStack.setOpaque(false);
+
+        JLabel lblCardTitle = new JLabel(title);
+        lblCardTitle.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblCardTitle.setForeground(new Color(240, 253, 250)); // Soft mint white
+
+        JLabel lblCardDesc = new JLabel(desc);
+        lblCardDesc.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        lblCardDesc.setForeground(new Color(186, 230, 253)); // Serene sky tint
+
+        textStack.add(lblCardTitle);
+        textStack.add(lblCardDesc);
+        card.add(textStack, BorderLayout.CENTER);
+
+        return card;
     }
 
     // Creates the login input form panel
@@ -203,15 +231,15 @@ public class LoginFrame extends JFrame {
         centerContainer.setOpaque(false);
         centerContainer.setLayout(new BoxLayout(centerContainer, BoxLayout.Y_AXIS));
 
-        JLabel lblHeader = new JLabel("Sign In");
-        lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        lblHeader.setForeground(new Color(15, 23, 42));
+        JLabel lblHeader = new JLabel("Workstation Sign In");
+        lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        lblHeader.setForeground(new Color(15, 23, 42)); // Deep charcoal
         lblHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
         centerContainer.add(lblHeader);
 
         centerContainer.add(Box.createVerticalStrut(4));
 
-        JLabel lblSubHeader = new JLabel("Enter your pharmacy credentials to access your terminal.");
+        JLabel lblSubHeader = new JLabel("Enter your pharmacy credentials to access the terminal.");
         lblSubHeader.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         lblSubHeader.setForeground(new Color(100, 116, 139));
         lblSubHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -309,11 +337,11 @@ public class LoginFrame extends JFrame {
         btnSignIn = new JButton("Sign In to Terminal");
         btnSignIn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnSignIn.setForeground(Color.WHITE);
-        btnSignIn.setBackground(new Color(13, 148, 136));
+        btnSignIn.setBackground(new Color(5, 150, 105)); // Healing green
         btnSignIn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
         btnSignIn.setPreferredSize(new Dimension(360, 44));
         btnSignIn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnSignIn.putClientProperty(FlatClientProperties.STYLE, "arc: 10; hoverBackground: #0F766E; pressedBackground: #115E59;");
+        btnSignIn.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #047857; pressedBackground: #065F46;");
         btnSignIn.setAlignmentX(Component.LEFT_ALIGNMENT);
         btnSignIn.addActionListener(e -> handleSignInAction());
         centerContainer.add(btnSignIn);
@@ -328,25 +356,26 @@ public class LoginFrame extends JFrame {
         btnExit.setPreferredSize(new Dimension(360, 36));
         btnExit.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnExit.putClientProperty(FlatClientProperties.BUTTON_TYPE, FlatClientProperties.BUTTON_TYPE_BORDERLESS);
+        btnExit.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #F1F5F9;");
         btnExit.setAlignmentX(Component.LEFT_ALIGNMENT);
         btnExit.addActionListener(e -> handleExitAction());
         centerContainer.add(btnExit);
 
         centerContainer.add(Box.createVerticalGlue());
 
-        // Quick demo credentials hint card
-        JPanel demoCard = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 8));
-        demoCard.setBackground(new Color(248, 250, 252));
+        // Quick demo credentials hint card: serene ice-blue tint
+        JPanel demoCard = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 7));
+        demoCard.setBackground(new Color(240, 249, 255)); // Serene ice blue
         demoCard.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(226, 232, 240), 1, true),
+                BorderFactory.createLineBorder(new Color(186, 230, 253), 1, true),
                 new EmptyBorder(4, 12, 4, 12)
         ));
         demoCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
         demoCard.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel lblDemo = new JLabel("Demo: admin / admin123 (Admin) • cashier1 / cashier123 (POS)");
+        JLabel lblDemo = new JLabel("Demo Logins: admin / admin123 (Admin) • cashier1 / cashier123 (POS)");
         lblDemo.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        lblDemo.setForeground(new Color(100, 116, 139));
+        lblDemo.setForeground(new Color(3, 105, 161)); // Serene deep cerulean
         demoCard.add(lblDemo);
         centerContainer.add(demoCard);
 

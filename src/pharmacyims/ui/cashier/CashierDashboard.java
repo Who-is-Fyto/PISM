@@ -141,14 +141,13 @@ public class CashierDashboard extends JFrame {
         cartActions.setOpaque(false);
 
         btnRemoveItem = new JButton("Remove Item (Del)");
-        btnRemoveItem.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btnRemoveItem.setEnabled(false);
         btnRemoveItem.addActionListener(e -> removeSelectedCartItem());
         cartActions.add(btnRemoveItem);
 
         btnClearCart = new JButton("Clear Cart");
-        btnClearCart.setForeground(new Color(220, 38, 38));
-        btnClearCart.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
+        btnClearCart.setForeground(new Color(225, 29, 72)); // Muted rose
+        btnClearCart.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #FFF1F2;");
         btnClearCart.setEnabled(false);
         btnClearCart.addActionListener(e -> clearCart());
         cartActions.add(btnClearCart);
@@ -253,7 +252,7 @@ public class CashierDashboard extends JFrame {
 
         lblChangeDue = new JLabel("$0.00");
         lblChangeDue.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lblChangeDue.setForeground(new Color(16, 185, 129)); // Emerald
+        lblChangeDue.setForeground(new Color(5, 150, 105)); // Botanical healing green
 
         paymentGrid.add(lblPaidPrompt);
         paymentGrid.add(txtAmountPaid);
@@ -264,11 +263,11 @@ public class CashierDashboard extends JFrame {
 
         // Bottom Action: Complete Sale & Print Bill
         btnCompleteSale = new JButton("✔  Complete Sale & Print Bill (F5)");
-        btnCompleteSale.setBackground(new Color(13, 148, 136)); // Medical Teal
+        btnCompleteSale.setBackground(new Color(5, 150, 105)); // Botanical healing green
         btnCompleteSale.setForeground(Color.WHITE);
         btnCompleteSale.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnCompleteSale.setPreferredSize(new Dimension(0, 42));
-        btnCompleteSale.putClientProperty(FlatClientProperties.STYLE, "arc: 10; hoverBackground: #0F766E;");
+        btnCompleteSale.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #047857;");
         btnCompleteSale.setEnabled(false);
         btnCompleteSale.addActionListener(e -> handleCheckout());
 

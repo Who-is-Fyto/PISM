@@ -77,15 +77,14 @@ public class BillReceiptDialog extends JDialog {
 
         JButton btnClose = new JButton("Close");
         btnClose.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        btnClose.putClientProperty(FlatClientProperties.STYLE, "arc: 8;");
         btnClose.addActionListener(e -> dispose());
         btnRow.add(btnClose);
 
         JButton btnPrint = new JButton("🖨  Print Receipt");
-        btnPrint.setBackground(new Color(13, 148, 136));
+        btnPrint.setBackground(new Color(5, 150, 105)); // Botanical healing green
         btnPrint.setForeground(Color.WHITE);
         btnPrint.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btnPrint.putClientProperty(FlatClientProperties.STYLE, "arc: 8; hoverBackground: #0F766E;");
+        btnPrint.putClientProperty(FlatClientProperties.STYLE, "hoverBackground: #047857;");
         btnPrint.addActionListener(e -> handlePrint());
         btnRow.add(btnPrint);
 
